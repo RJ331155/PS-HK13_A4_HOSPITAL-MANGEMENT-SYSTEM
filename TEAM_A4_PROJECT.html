@@ -1309,7 +1309,7 @@ function lookupPatient() {
 // ════════════════════════════
 // ACTIONS
 // ════════════════════════════
-function addPatient() {
+async function addPatient() {
   const name = document.getElementById('reg-name').value.trim();
   const disease = document.getElementById('reg-disease').value.trim();
   const age = parseInt(document.getElementById('reg-age').value)||null;
@@ -1323,6 +1323,19 @@ function addPatient() {
   const p = {id:nextId(),name,disease,age,blood,gender,gmail,phone,severity,type,arrival:Date.now()};
   state.queue.push(p);
   save();
+
+  // Calculate AI predicted wait time and queue position
+  const q = getOptQ();
+  const pos = q.findIndex(x=>x.id===p.id)+1;
+  const waitMins = predictWait(severity);
+  const waitHours = waitMins >= 60 ? Math.floor(waitMins/60)+'h '+( waitMins%60>0 ? (waitMins%60)+'m' : '') : waitMins+' minutes';
+  const patientsAhead = pos - 1;
+  const urgencyLabel = severity>=5?'🚨 EMERGENCY':severity>=4?'⚠️ Urgent':'✅ Normal';
+  const now = new Date();
+  const eta = new Date(now.getTime() + waitMins*60000);
+  const etaStr = eta.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+
+  // Clear form
   document.getElementById('reg-name').value='';
   document.getElementById('reg-disease').value='';
   document.getElementById('reg-age').value='';
@@ -1334,6 +1347,57 @@ function addPatient() {
   document.getElementById('sev-display').textContent='3';
   renderQueue();
   toast(`${name} (${p.id}) added to queue!`,'success');
+
+  // Send queue confirmation email if gmail provided
+  if (gmail) {
+    if (!emailConfig || !emailConfig.pubKey) {
+      setTimeout(()=>toast(`ℹ️ Email not configured — setup doctor email to notify patients`,'info'),1200);
+    } else {
+      const emailMsg = [
+        `Dear ${name},`,
+        ``,
+        `✅ You have been successfully registered in the HMS Queue.`,
+        ``,
+        `━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        `🆔  Patient ID     : ${p.id}`,
+        `🏥  Condition      : ${disease}`,
+        `📋  Visit Type     : ${type}`,
+        `📊  Priority       : ${urgencyLabel}`,
+        `━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        ``,
+        `🤖 AI Predicted Wait Time`,
+        `   ⏱️  Estimated Wait  : ${waitHours}`,
+        `   🕐  Expected Time   : ~${etaStr}`,
+        `   👥  Patients Ahead  : ${patientsAhead}`,
+        `   📌  Your Position   : #${pos} in queue`,
+        ``,
+        `━━━━━━━━━━━━━━━━━━━━━━━━━`,
+        `Please be present at the hospital and wait for your token to be called.`,
+        ``,
+        `⚠️  Note: Wait time may vary based on emergency cases.`,
+        ``,
+        `Thank you for choosing HMS Hospital.`,
+        ``,
+        `Regards,`,
+        `${emailConfig.docName || 'HMS Medical Team'}`,
+      ].join('\n');
+
+      try {
+        await emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
+          to_email: gmail,
+          patient_name: name,
+          patient_id: p.id,
+          disease: disease,
+          doctor_name: emailConfig.docName || 'HMS Medical Team',
+          message: emailMsg,
+          hospital_name: 'HMS – Team A4 Hospital',
+        });
+        setTimeout(()=>toast(`📧 Queue confirmation sent to ${gmail}`,'success'),1000);
+      } catch(err) {
+        setTimeout(()=>toast(`⚠️ Email failed: ${err.text||err.message||'Check EmailJS config'}`,'error'),1000);
+      }
+    }
+  }
 }
 
 async function treatNext() {
