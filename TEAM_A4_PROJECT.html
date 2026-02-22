@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HMS — Hospital Management System · Team A4</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root {
+  --bg:#f0f4f8; --bg2:#ffffff; --bg3:#e8eef5;
+  --sidebar:#0a1628; --navy:#0a1628;
+  --blue:#1a6ef5; --cyan:#00bcd4; --teal:#00897b;
+  --green:#00c853; --red:#f44336; --amber:#ff9800; --purple:#7c3aed;
+  --text:#1a2535; --text2:#4a5568; --text3:#8a9ab0;
+  --border:#d8e2ef; --card:#ffffff;
+  --mono:'Share Tech Mono',monospace;
+  --sans:'Nunito',sans-serif;
+  --display:'Rajdhani',sans-serif;
+  --r:12px; --rs:8px;
+  --shadow:0 2px 20px rgba(10,22,40,0.08);
+  --shadow2:0 8px 40px rgba(10,22,40,0.14);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg3);}
+::-webkit-scrollbar-thumb{background:#c0ccd8;border-radius:3px;}
+.view{display:none;min-height:100vh;}
+.view.active{display:flex;}
+
+/* ─── ECG BG ─── */
+.ecg-bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(135deg,#0a1628 0%,#0e2044 50%,#0a1628 100%);}
+.ecg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(26,110,245,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(26,110,245,0.08) 1px,transparent 1px);background-size:40px 40px;}
+.ecg-line{position:absolute;bottom:0;left:0;right:0;height:160px;}
+.ecg-svg{width:200%;animation:ecgScroll 4s linear infinite;}
+@keyframes ecgScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.vital-orb{position:absolute;border-radius:50%;pointer-events:none;animation:orbPulse 6s ease-in-out infinite;}
+.orb1{width:400px;height:400px;top:-100px;right:-80px;background:radial-gradient(circle,rgba(26,110,245,0.15) 0%,transparent 70%);}
+.orb2{width:300px;height:300px;bottom:50px;left:-60px;background:radial-gradient(circle,rgba(0,188,212,0.12) 0%,transparent 70%);animation-delay:2s;}
+@keyframes orbPulse{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.1);opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+
+/* ─── LOGIN ─── */
+#view-login{align-items:center;justify-content:center;position:relative;}
+.login-wrap{width:100%;max-width:480px;position:relative;z-index:1;padding:24px;}
+.login-header{text-align:center;margin-bottom:28px;}
+.cross-icon{width:72px;height:72px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center;}
+.cross-icon::before,.cross-icon::after{content:'';position:absolute;background:white;border-radius:3px;}
+.cross-icon::before{width:16px;height:50px;}
+.cross-icon::after{width:50px;height:16px;}
+.cross-ring{position:absolute;inset:0;border:2px solid rgba(26,110,245,0.5);border-radius:50%;animation:crossSpin 8s linear infinite;}
+.cross-ring2{position:absolute;inset:6px;border:1px solid rgba(0,188,212,0.3);border-radius:50%;animation:crossSpin 5s linear infinite reverse;}
+@keyframes crossSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.login-header h1{font-family:var(--display);font-size:34px;font-weight:700;color:white;letter-spacing:0.08em;}
+.login-header .tagline{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.15em;margin-top:4px;}
+.team-a4-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,0.25);border:1px solid rgba(124,58,237,0.5);border-radius:100px;padding:4px 14px;font-family:var(--mono);font-size:11px;color:#c084fc;letter-spacing:0.1em;margin-top:8px;}
+
+.login-vitals{display:flex;gap:10px;margin-bottom:20px;}
+.lv-card{flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:var(--rs);padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.lv-icon{font-size:16px;}
+.lv-val{font-family:var(--mono);font-size:15px;color:white;font-weight:500;}
+.lv-label{font-size:9px;color:rgba(255,255,255,0.35);letter-spacing:0.08em;}
+.lv-dot{width:6px;height:6px;border-radius:50%;margin-left:auto;animation:blink 1.5s ease-in-out infinite;}
+.lv-dot.g{background:var(--green);}
+.lv-dot.c{background:var(--cyan);animation-delay:0.5s;}
+.lv-dot.a{background:var(--amber);animation-delay:1s;}
+
+.login-card{background:rgba(255,255,255,0.97);border-radius:var(--r);padding:28px;box-shadow:0 32px 80px rgba(0,0,0,0.4);}
+.tab-row{display:flex;gap:0;background:var(--bg3);border-radius:var(--rs);padding:4px;margin-bottom:24px;border:1px solid var(--border);}
+.tab-btn{flex:1;padding:9px;border-radius:6px;background:none;border:none;color:var(--text3);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.tab-btn.active{background:white;color:var(--blue);box-shadow:0 2px 8px rgba(10,22,40,0.1);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:0.05em;margin-bottom:5px;text-transform:uppercase;}
+.field input,.field select{width:100%;padding:10px 13px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:all 0.2s;}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,0.1);}
+.field input::placeholder{color:var(--text3);}
+
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#1a6ef5,#0d5ce8);border:none;border-radius:var(--rs);color:white;font-family:var(--display);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;box-shadow:0 4px 20px rgba(26,110,245,0.4);}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(26,110,245,0.5);}
+.patient-access-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00897b,#00695c);border:none;border-radius:var(--rs);color:white;font-family:var(--display);font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(0,137,123,0.4);}
+.patient-access-btn:hover{transform:translateY(-2px);}
+.login-note{font-size:11px;color:var(--text3);text-align:center;margin-top:12px;font-family:var(--mono);}
+.pa-note{font-size:13px;color:var(--text2);text-align:center;margin-bottom:20px;line-height:1.7;}
+
+/* ─── APP SHELL ─── */
+#view-app{flex-direction:row;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:268px;min-height:100vh;flex-shrink:0;background:var(--sidebar);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-head{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:12px;}
+.sb-cross{width:36px;height:36px;flex-shrink:0;border-radius:10px;background:linear-gradient(135deg,var(--blue),#0d8cf5);display:flex;align-items:center;justify-content:center;position:relative;}
+.sb-cross::before,.sb-cross::after{content:'';position:absolute;background:white;border-radius:2px;}
+.sb-cross::before{width:5px;height:18px;}
+.sb-cross::after{width:18px;height:5px;}
+.sb-title{font-family:var(--display);font-size:19px;font-weight:700;color:white;letter-spacing:0.04em;}
+.sb-sub{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,0.35);letter-spacing:0.1em;}
+.sb-team{font-size:9px;font-family:var(--mono);color:#c084fc;letter-spacing:0.12em;margin-top:1px;}
+
+/* Team A4 strip */
+.a4-strip{background:linear-gradient(90deg,rgba(124,58,237,0.2),rgba(124,58,237,0.05));border-bottom:1px solid rgba(124,58,237,0.15);padding:8px 18px;display:flex;align-items:center;gap:8px;}
+.a4-strip .a4-icon{font-size:13px;}
+.a4-strip .a4-text{font-family:var(--mono);font-size:10px;color:#c084fc;letter-spacing:0.1em;}
+
+.sb-vitals{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column;gap:7px;}
+.sv-row{display:flex;align-items:center;justify-content:space-between;}
+.sv-label{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,0.3);letter-spacing:0.08em;}
+.sv-val{font-family:var(--mono);font-size:12px;font-weight:500;}
+.sv-val.g{color:var(--green);}
+.sv-val.c{color:var(--cyan);}
+.sv-val.a{color:var(--amber);}
+.sv-bar-wrap{flex:1;margin:0 8px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.sv-bar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+.sv-bar-fill.g{background:var(--green);}
+.sv-bar-fill.c{background:var(--cyan);}
+.sv-bar-fill.a{background:var(--amber);}
+
+.sb-ecg{padding:8px 16px;border-bottom:1px solid rgba(255,255,255,0.05);overflow:hidden;}
+.sb-ecg svg{width:100%;height:32px;display:block;}
+
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:10px 10px;flex:1;}
+.sidebar-section{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,0.2);letter-spacing:0.15em;text-transform:uppercase;padding:10px 6px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--rs);cursor:pointer;transition:all 0.2s;font-size:13px;font-weight:600;color:rgba(255,255,255,0.45);border:1px solid transparent;}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8);}
+.nav-item.active{background:rgba(26,110,245,0.2);border-color:rgba(26,110,245,0.3);color:#6baeff;}
+.nav-item .n-icon{width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.nav-item.active .n-icon{background:rgba(26,110,245,0.25);}
+
+/* Reg form */
+.sb-reg{padding:0 10px 10px;}
+.sb-reg-title{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,0.2);letter-spacing:0.15em;text-transform:uppercase;padding:10px 6px 8px;}
+.reg-field{margin-bottom:8px;}
+.reg-field label{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,0.3);letter-spacing:0.06em;display:block;margin-bottom:4px;text-transform:uppercase;}
+.reg-field input,.reg-field select{width:100%;padding:7px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:white;font-family:var(--sans);font-size:12px;outline:none;transition:border-color 0.2s;}
+.reg-field input:focus,.reg-field select:focus{border-color:rgba(26,110,245,0.5);}
+.reg-field input::placeholder{color:rgba(255,255,255,0.2);}
+.reg-field select option{background:#0e1e38;}
+.reg-row{display:flex;gap:6px;}
+.reg-row .reg-field{flex:1;}
+.sev-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.sev-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--blue);width:20px;text-align:center;}
+input[type=range]{flex:1;accent-color:var(--blue);cursor:pointer;}
+.btn-queue{width:100%;padding:9px;border-radius:7px;background:linear-gradient(135deg,#1a6ef5,#00bcd4);border:none;color:white;font-family:var(--display);font-weight:600;font-size:13px;cursor:pointer;transition:all 0.2s;letter-spacing:0.03em;box-shadow:0 3px 12px rgba(26,110,245,0.3);}
+.btn-queue:hover{opacity:0.9;transform:translateY(-1px);}
+
+.patient-info-note{margin:10px;padding:12px;background:rgba(0,137,123,0.15);border:1px solid rgba(0,137,123,0.25);border-radius:var(--rs);font-size:11px;color:rgba(255,255,255,0.6);line-height:1.6;}
+.sb-bottom{padding:10px;border-top:1px solid rgba(255,255,255,0.06);}
+.logout-btn{width:100%;padding:9px;border-radius:7px;background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.2);color:rgba(244,67,54,0.8);font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.logout-btn:hover{background:rgba(244,67,54,0.18);}
+
+/* ─── EMAIL SETUP MODAL ─── */
+.email-setup-overlay{position:fixed;inset:0;background:rgba(5,12,25,0.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.email-setup-overlay.open{opacity:1;pointer-events:all;}
+.email-setup-modal{background:white;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,0.5);}
+.esm-header{background:linear-gradient(135deg,#0a1628,#0e2044);padding:22px 28px;border-radius:16px 16px 0 0;display:flex;align-items:center;gap:14px;}
+.esm-icon{width:44px;height:44px;background:rgba(26,110,245,0.3);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.esm-title{font-family:var(--display);font-size:22px;font-weight:700;color:white;letter-spacing:0.03em;}
+.esm-sub{font-size:11px;color:rgba(255,255,255,0.45);font-family:var(--mono);letter-spacing:0.08em;margin-top:2px;}
+.esm-body{padding:24px 28px;}
+.esm-step{display:flex;gap:14px;margin-bottom:20px;padding:16px;background:#f8fafc;border-radius:10px;border:1px solid #e2eaf4;}
+.esm-step-num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.esm-step-content{}
+.esm-step-title{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:4px;}
+.esm-step-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+.esm-step-desc a{color:var(--blue);text-decoration:none;font-weight:600;}
+.esm-step-desc a:hover{text-decoration:underline;}
+.esm-field{margin-bottom:14px;}
+.esm-field label{display:block;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:0.05em;margin-bottom:5px;text-transform:uppercase;}
+.esm-field input{width:100%;padding:10px 13px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:all 0.2s;}
+.esm-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,0.1);}
+.esm-field input::placeholder{color:var(--text3);font-family:var(--sans);}
+.esm-connected{display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(0,200,83,0.08);border:1.5px solid rgba(0,200,83,0.3);border-radius:var(--rs);margin-bottom:16px;}
+.esm-connected .ec-icon{font-size:20px;}
+.esm-connected .ec-text{font-size:13px;font-weight:600;color:var(--teal);}
+.esm-connected .ec-sub{font-size:11px;color:var(--text3);}
+.esm-footer{display:flex;gap:10px;padding:0 28px 24px;}
+.btn-esm-save{flex:1;padding:12px;background:linear-gradient(135deg,#1a6ef5,#0d8cf5);border:none;border-radius:var(--rs);color:white;font-family:var(--display);font-size:15px;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;box-shadow:0 4px 20px rgba(26,110,245,0.3);}
+.btn-esm-save:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(26,110,245,0.4);}
+.btn-esm-test{padding:12px 20px;background:rgba(0,200,83,0.1);border:1.5px solid rgba(0,200,83,0.3);border-radius:var(--rs);color:var(--teal);font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.btn-esm-test:hover{background:rgba(0,200,83,0.18);}
+.btn-esm-close{padding:12px 16px;background:rgba(244,67,54,0.08);border:1px solid rgba(244,67,54,0.2);border-radius:var(--rs);color:var(--red);font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.btn-esm-close:hover{background:rgba(244,67,54,0.15);}
+.email-status-btn{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;border:none;}
+.email-status-btn.connected{background:rgba(0,200,83,0.1);color:var(--teal);border:1px solid rgba(0,200,83,0.25);}
+.email-status-btn.disconnected{background:rgba(255,152,0,0.1);color:var(--amber);border:1px solid rgba(255,152,0,0.3);animation:gentlePulse 2s ease-in-out infinite;}
+@keyframes gentlePulse{0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,0)}50%{box-shadow:0 0 0 4px rgba(255,152,0,0.15)}}
+.email-status-dot{width:6px;height:6px;border-radius:50%;}
+.email-status-dot.on{background:var(--green);animation:blink 1.5s ease-in-out infinite;}
+.email-status-dot.off{background:var(--amber);}
+.sending-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── TOPBAR ─── */
+.topbar{height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:white;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;box-shadow:0 1px 12px rgba(10,22,40,0.06);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-title{font-family:var(--display);font-size:19px;font-weight:700;color:var(--navy);letter-spacing:0.02em;}
+.topbar-subtitle{font-size:11px;color:var(--text3);margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.tb-time{font-family:var(--mono);font-size:13px;color:var(--text3);}
+.tb-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;}
+.tb-badge.staff{background:rgba(26,110,245,0.1);color:var(--blue);border:1px solid rgba(26,110,245,0.2);}
+.tb-badge.patient{background:rgba(0,137,123,0.1);color:var(--teal);border:1px solid rgba(0,137,123,0.2);}
+.tb-dot{width:6px;height:6px;border-radius:50%;animation:blink 1.5s ease-in-out infinite;}
+.tb-dot.b{background:var(--blue);}
+.tb-dot.t{background:var(--teal);}
+.team-topbar{font-family:var(--mono);font-size:11px;color:#7c3aed;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:100px;padding:4px 12px;letter-spacing:0.08em;}
+
+/* ─── MAIN ─── */
+.main-wrap{flex:1;display:flex;flex-direction:column;min-height:100vh;overflow:hidden;}
+.main-content{flex:1;padding:24px 28px;overflow-y:auto;max-height:calc(100vh - 60px);}
+
+/* ─── NOW SERVING ─── */
+.now-serving{background:linear-gradient(135deg,#0a1628 0%,#0e2044 100%);border-radius:var(--r);padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden;box-shadow:var(--shadow2);}
+.ns-ecg-bg{position:absolute;right:0;top:0;bottom:0;width:280px;opacity:0.12;overflow:hidden;}
+.ns-ecg-bg svg{height:100%;width:100%;}
+.ns-pulse-ring{width:52px;height:52px;border-radius:50%;flex-shrink:0;background:rgba(0,200,83,0.15);border:2px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:20px;animation:pulseRing 2s ease-out infinite;}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(0,200,83,0.4)}70%{box-shadow:0 0 0 16px rgba(0,200,83,0)}100%{box-shadow:0 0 0 0 rgba(0,200,83,0)}}
+.ns-label{font-size:9px;font-family:var(--mono);letter-spacing:0.2em;text-transform:uppercase;color:var(--green);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.ns-label::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.5s ease-in-out infinite;}
+.ns-token{font-family:var(--display);font-size:42px;font-weight:700;color:white;line-height:1;letter-spacing:-0.01em;}
+.ns-name{font-size:15px;color:rgba(255,255,255,0.65);margin-top:2px;}
+.ns-details{margin-left:auto;text-align:right;}
+.ns-wait{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.35);margin-top:6px;}
+
+/* ─── STATS ─── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:white;border-radius:var(--r);padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform 0.25s,box-shadow 0.25s;position:relative;overflow:hidden;}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow2);}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.s-blue::before{background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.s-green::before{background:linear-gradient(90deg,var(--green),var(--teal));}
+.s-red::before{background:linear-gradient(90deg,var(--red),#ff6090);}
+.s-amber::before{background:linear-gradient(90deg,var(--amber),#ffc107);}
+.s-purple::before{background:linear-gradient(90deg,var(--purple),#a855f7);}
+.sc-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+.sc-value{font-family:var(--display);font-size:38px;font-weight:700;line-height:1;}
+.c-blue{color:var(--blue);} .c-green{color:var(--green);} .c-red{color:var(--red);} .c-amber{color:var(--amber);} .c-purple{color:var(--purple);}
+.sc-sub{font-size:11px;color:var(--text3);margin-top:3px;}
+.sc-icon{position:absolute;bottom:14px;right:14px;font-size:28px;opacity:0.1;}
+
+/* ─── SEARCH ─── */
+.search-wrap{position:relative;margin-bottom:18px;}
+.search-wrap input{width:100%;padding:11px 16px 11px 42px;background:white;border:1.5px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:all 0.2s;box-shadow:var(--shadow);}
+.search-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,0.1);}
+.search-wrap::before{content:'🔍';position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
+
+/* ─── TABLE ─── */
+.section-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.section-bar h2{font-family:var(--display);font-size:19px;font-weight:700;color:var(--navy);}
+.btn-treat{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--rs);background:linear-gradient(135deg,var(--green),var(--teal));border:none;color:white;font-family:var(--display);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 14px rgba(0,200,83,0.3);}
+.btn-treat:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,200,83,0.4);}
+.table-card{background:white;border-radius:var(--r);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);}
+.q-table{width:100%;border-collapse:collapse;}
+.q-table thead tr{border-bottom:2px solid var(--bg3);}
+.q-table thead th{padding:11px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;background:var(--bg);}
+.q-table tbody tr{border-bottom:1px solid var(--bg3);transition:background 0.15s;}
+.q-table tbody tr:last-child{border-bottom:none;}
+.q-table tbody tr:hover{background:#f5f9ff;}
+.q-table td{padding:11px 14px;font-size:13px;}
+.q-table td.mono{font-family:var(--mono);color:var(--text3);font-size:12px;}
+.emg-row{background:rgba(244,67,54,0.03);}
+.emg-row td:first-child{border-left:3px solid var(--red);}
+@keyframes emgP{0%,100%{background:transparent}50%{background:rgba(244,67,54,0.04)}}
+.emg-row{animation:emgP 2s ease-in-out infinite;}
+.sl-pill{width:28px;height:28px;border-radius:50%;background:var(--bg3);display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--text3);}
+.sl-pill.top{background:rgba(26,110,245,0.12);color:var(--blue);font-weight:700;}
+.p-name{font-weight:700;color:var(--navy);}
+.p-meta{font-size:11px;color:var(--text3);margin-top:1px;font-family:var(--mono);}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:0.03em;}
+.badge-emergency{background:rgba(244,67,54,0.1);color:var(--red);border:1px solid rgba(244,67,54,0.2);}
+.badge-stable{background:rgba(0,200,83,0.1);color:#00a844;border:1px solid rgba(0,200,83,0.2);}
+.badge-surgery{background:rgba(255,152,0,0.1);color:#e65100;border:1px solid rgba(255,152,0,0.2);}
+.badge-consultation{background:rgba(26,110,245,0.1);color:var(--blue);border:1px solid rgba(26,110,245,0.2);}
+.sev-dots{display:flex;gap:3px;align-items:center;}
+.sd{width:8px;height:8px;border-radius:50%;background:var(--bg3);}
+.sd.on{background:var(--amber);}
+.sd.on.hi{background:var(--red);}
+.sd.on.lo{background:var(--green);}
+.wait-chip{font-family:var(--mono);font-size:11px;color:var(--text3);}
+
+/* blood group pill */
+.bg-pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:11px;font-weight:700;background:rgba(244,67,54,0.1);color:var(--red);border:1px solid rgba(244,67,54,0.2);}
+
+/* Email action btn in table */
+.btn-email{background:none;border:1px solid rgba(26,110,245,0.25);border-radius:6px;color:var(--blue);font-size:11px;padding:4px 8px;cursor:pointer;font-family:var(--sans);transition:all 0.2s;font-weight:600;}
+.btn-email:hover{background:rgba(26,110,245,0.08);}
+.btn-view{background:none;border:1px solid rgba(0,137,123,0.25);border-radius:6px;color:var(--teal);font-size:11px;padding:4px 8px;cursor:pointer;font-family:var(--sans);transition:all 0.2s;font-weight:600;}
+.btn-view:hover{background:rgba(0,137,123,0.08);}
+
+/* ─── PAGE HEADER ─── */
+.page-header{margin-bottom:20px;}
+.ph-breadcrumb{font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:0.06em;margin-bottom:4px;}
+.ph-title{font-family:var(--display);font-size:26px;font-weight:700;color:var(--navy);}
+.ph-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+
+/* ─── PATIENT PORTAL ─── */
+.patient-now-card{background:linear-gradient(135deg,#0a1628,#0e2044);border-radius:var(--r);padding:28px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow2);position:relative;overflow:hidden;}
+.pnc-ecg-bg{position:absolute;inset:0;opacity:0.08;}
+.pnc-ecg-bg svg{width:100%;height:100%;}
+.pnc-label{font-size:9px;font-family:var(--mono);letter-spacing:0.2em;text-transform:uppercase;color:var(--green);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.pnc-label::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s ease-in-out infinite;}
+.pnc-token{font-family:var(--display);font-size:68px;font-weight:700;color:white;line-height:1;letter-spacing:-0.03em;}
+.pnc-name{font-size:17px;color:rgba(255,255,255,0.5);margin-top:6px;}
+
+.pid-input-wrap{max-width:420px;margin-bottom:20px;}
+.pid-input-wrap label{display:block;font-size:11px;font-weight:700;color:var(--text2);letter-spacing:0.05em;margin-bottom:7px;text-transform:uppercase;}
+.pid-input-wrap input{width:100%;padding:13px 16px;background:white;border:1.5px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--mono);font-size:18px;font-weight:500;outline:none;transition:all 0.2s;box-shadow:var(--shadow);letter-spacing:0.1em;}
+.pid-input-wrap input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,137,123,0.12);}
+
+.patient-result-card{background:white;border-radius:var(--r);border:1px solid var(--border);padding:24px;box-shadow:var(--shadow);}
+.prc-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.prc-avatar{width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,rgba(26,110,245,0.15),rgba(0,188,212,0.1));border:2px solid rgba(26,110,245,0.2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.prc-name{font-family:var(--display);font-size:22px;font-weight:700;color:var(--navy);}
+.prc-id{font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2px;}
+.prc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.prc-stat{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:14px;}
+.prc-stat-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:5px;}
+.prc-stat-value{font-family:var(--display);font-size:22px;font-weight:700;}
+.ai-box{background:linear-gradient(135deg,rgba(26,110,245,0.06),rgba(0,188,212,0.04));border:1.5px solid rgba(26,110,245,0.15);border-radius:var(--rs);padding:16px 20px;margin-top:16px;display:flex;align-items:center;gap:14px;}
+.ai-label{font-size:10px;font-family:var(--mono);color:var(--blue);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;}
+.ai-val{font-family:var(--display);font-size:30px;font-weight:700;color:var(--navy);}
+.ai-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+
+.msg-success{background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:var(--rs);padding:14px 18px;color:#00874a;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;}
+.msg-error{background:rgba(244,67,54,0.07);border:1px solid rgba(244,67,54,0.2);border-radius:var(--rs);padding:14px 18px;color:var(--red);font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;}
+
+/* ─── PATIENT DETAIL MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.55);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:16px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 40px 100px rgba(10,22,40,0.3);}
+.modal-head{padding:24px 28px 0;display:flex;align-items:flex-start;justify-content:space-between;}
+.modal-head h2{font-family:var(--display);font-size:22px;font-weight:700;color:var(--navy);}
+.modal-close{background:var(--bg3);border:none;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text3);transition:all 0.2s;flex-shrink:0;}
+.modal-close:hover{background:var(--border);color:var(--text);}
+.modal-body{padding:20px 28px 28px;}
+.modal-section{margin-bottom:20px;}
+.modal-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.modal-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.m-field label{font-size:11px;font-weight:700;color:var(--text2);display:block;margin-bottom:5px;letter-spacing:0.04em;}
+.m-field input,.m-field select,.m-field textarea{width:100%;padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:all 0.2s;}
+.m-field input:focus,.m-field select:focus,.m-field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,0.1);}
+.m-field textarea{resize:vertical;min-height:70px;line-height:1.5;}
+.m-field.full{grid-column:1/-1;}
+.m-field select option{background:white;}
+
+/* Gmail section in modal */
+.gmail-strip{background:linear-gradient(135deg,rgba(26,110,245,0.05),rgba(0,188,212,0.03));border:1.5px solid rgba(26,110,245,0.15);border-radius:var(--rs);padding:16px 18px;margin-bottom:14px;}
+.gmail-strip-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.gmail-strip-head .gi{font-size:20px;}
+.gmail-strip-head h3{font-family:var(--display);font-size:16px;font-weight:600;color:var(--navy);}
+.gmail-strip-head p{font-size:11px;color:var(--text3);}
+.gmail-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.btn-send-report{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--rs);background:linear-gradient(135deg,var(--blue),var(--cyan));border:none;color:white;font-family:var(--display);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 3px 12px rgba(26,110,245,0.3);}
+.btn-send-report:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(26,110,245,0.4);}
+.btn-send-prescription{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--rs);background:linear-gradient(135deg,var(--teal),#00695c);border:none;color:white;font-family:var(--display);font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 3px 12px rgba(0,137,123,0.3);}
+.btn-send-prescription:hover{transform:translateY(-1px);}
+
+.modal-footer{padding:0 28px 24px;display:flex;gap:10px;justify-content:flex-end;}
+.btn-modal-save{padding:11px 24px;border-radius:var(--rs);background:linear-gradient(135deg,var(--blue),#0d5ce8);border:none;color:white;font-family:var(--display);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 3px 12px rgba(26,110,245,0.3);}
+.btn-modal-save:hover{transform:translateY(-1px);}
+.btn-modal-cancel{padding:11px 20px;border-radius:var(--rs);background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-family:var(--sans);font-size:13px;cursor:pointer;transition:all 0.2s;}
+.btn-modal-cancel:hover{background:var(--border);}
+
+/* Send mail confirm toast */
+.mail-sent-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.4);backdrop-filter:blur(4px);z-index:2000;display:none;align-items:center;justify-content:center;}
+.mail-sent-overlay.open{display:flex;}
+.mail-sent-card{background:white;border-radius:16px;padding:40px;text-align:center;max-width:400px;box-shadow:0 40px 100px rgba(10,22,40,0.3);}
+.mail-sent-icon{font-size:52px;margin-bottom:16px;}
+.mail-sent-card h2{font-family:var(--display);font-size:24px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.mail-sent-card p{font-size:14px;color:var(--text3);line-height:1.6;}
+.mail-sent-card .mse{color:var(--blue);font-weight:600;}
+.btn-mail-ok{margin-top:24px;padding:11px 32px;border-radius:var(--rs);background:var(--blue);border:none;color:white;font-family:var(--display);font-size:14px;font-weight:600;cursor:pointer;}
+
+/* Analytics */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text3);}
+.empty-state .ei{font-size:40px;margin-bottom:12px;opacity:0.4;}
+.a-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:9px;}
+.a-bar-label{width:140px;font-size:12px;color:var(--text2);flex-shrink:0;font-weight:600;}
+.a-bar-track{flex:1;height:9px;background:var(--bg3);border-radius:5px;overflow:hidden;}
+.a-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width 0.8s ease;}
+.a-bar-count{width:24px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--text3);}
+
+/* Toast */
+.toast-container{position:fixed;top:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:white;border:1px solid var(--border);border-radius:var(--rs);padding:12px 16px;font-size:13px;font-weight:600;min-width:260px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 32px rgba(10,22,40,0.15);animation:toastIn 0.3s ease;}
+.toast.success{border-left:3px solid var(--green);}
+.toast.error{border-left:3px solid var(--red);}
+.toast.info{border-left:3px solid var(--blue);}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+
+/* Confetti */
+.confetti-piece{position:fixed;border-radius:2px;z-index:9999;pointer-events:none;animation:cfFall 2.5s ease-in forwards;}
+@keyframes cfFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* Team A4 footer in sidebar bottom */
+.a4-footer{padding:8px 14px;border-top:1px solid rgba(255,255,255,0.05);text-align:center;}
+.a4-footer .a4f{font-family:var(--mono);font-size:10px;color:rgba(124,58,237,0.6);letter-spacing:0.12em;}
+</style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ══ MAIL SENT OVERLAY ══ -->
+<div class="mail-sent-overlay" id="mailSentOverlay">
+  <div class="mail-sent-card">
+    <div class="mail-sent-icon">📧</div>
+    <h2>Email Sent!</h2>
+    <p id="mailSentMsg">The document has been sent to <span class="mse" id="mailSentAddr"></span> successfully.</p>
+    <button class="btn-mail-ok" onclick="closeMailSent()">Done</button>
+  </div>
+</div>
+
+<!-- ══ PATIENT DETAIL MODAL ══ -->
+<div class="modal-overlay" id="patientModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2 id="modal-title">Patient Details</h2>
+        <p style="font-size:12px;color:var(--text3);margin-top:2px;" id="modal-pid-label">Patient ID</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Gmail & Communication -->
+      <div class="gmail-strip">
+        <div class="gmail-strip-head">
+          <div class="gi">📧</div>
+          <div>
+            <h3>Communication & Reports</h3>
+            <p>Send prescriptions and reports directly to patient's Gmail</p>
+          </div>
+        </div>
+        <div class="m-field">
+          <label>Patient Gmail Address</label>
+          <input type="email" id="modal-gmail" placeholder="patient@gmail.com" />
+        </div>
+        <div class="m-field">
+          <label>Prescription / Notes (will be emailed)</label>
+          <textarea id="modal-prescription" placeholder="e.g. Tab Paracetamol 500mg – twice daily for 5 days. Rest advised. Follow up in 3 days…"></textarea>
+        </div>
+        <div class="gmail-actions">
+          <button class="btn-send-prescription" onclick="sendEmail('prescription')">💊 Send Prescription</button>
+          <button class="btn-send-report" onclick="sendEmail('report')">📋 Send Report</button>
+        </div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="modal-section">
+        <div class="modal-section-title">🧑 Personal Information</div>
+        <div class="modal-grid three">
+          <div class="m-field"><label>Full Name</label><input type="text" id="modal-name" placeholder="Patient name" /></div>
+          <div class="m-field"><label>Age</label><input type="number" id="modal-age" placeholder="e.g. 32" min="0" max="120" /></div>
+          <div class="m-field"><label>Gender</label>
+            <select id="modal-gender">
+              <option value="">Select</option>
+              <option>Male</option><option>Female</option><option>Other</option>
+            </select>
+          </div>
+          <div class="m-field"><label>Blood Group</label>
+            <select id="modal-blood">
+              <option value="">Select</option>
+              <option>A+</option><option>A−</option>
+              <option>B+</option><option>B−</option>
+              <option>AB+</option><option>AB−</option>
+              <option>O+</option><option>O−</option>
+            </select>
+          </div>
+          <div class="m-field"><label>Phone Number</label><input type="tel" id="modal-phone" placeholder="+91 9XXXXXXXXX" /></div>
+          <div class="m-field"><label>Aadhaar / ID No.</label><input type="text" id="modal-aadhaar" placeholder="XXXX XXXX XXXX" /></div>
+        </div>
+      </div>
+
+      <!-- Medical Info -->
+      <div class="modal-section">
+        <div class="modal-section-title">🏥 Medical Information</div>
+        <div class="modal-grid">
+          <div class="m-field"><label>Primary Complaint</label><input type="text" id="modal-disease" placeholder="e.g. Chest Pain" /></div>
+          <div class="m-field"><label>Appointment Type</label>
+            <select id="modal-type"><option>Consultation</option><option>Emergency</option><option>Surgery</option></select>
+          </div>
+          <div class="m-field"><label>Allergies</label><input type="text" id="modal-allergies" placeholder="e.g. Penicillin, Aspirin" /></div>
+          <div class="m-field"><label>Current Medications</label><input type="text" id="modal-medications" placeholder="e.g. Metformin 500mg" /></div>
+          <div class="m-field full"><label>Known Medical Conditions</label><input type="text" id="modal-conditions" placeholder="e.g. Diabetes Type 2, Hypertension" /></div>
+          <div class="m-field full"><label>Doctor / Attending Physician</label><input type="text" id="modal-doctor" placeholder="Dr. Name" /></div>
+          <div class="m-field full"><label>Ward / Room No.</label><input type="text" id="modal-ward" placeholder="e.g. Ward 3, Bed 12" /></div>
+        </div>
+      </div>
+
+      <!-- Emergency Contact -->
+      <div class="modal-section">
+        <div class="modal-section-title">🆘 Emergency Contact</div>
+        <div class="modal-grid">
+          <div class="m-field"><label>Contact Name</label><input type="text" id="modal-ec-name" placeholder="Guardian / Relative" /></div>
+          <div class="m-field"><label>Relationship</label><input type="text" id="modal-ec-rel" placeholder="e.g. Spouse, Parent" /></div>
+          <div class="m-field full"><label>Contact Phone</label><input type="tel" id="modal-ec-phone" placeholder="+91 9XXXXXXXXX" /></div>
+        </div>
+      </div>
+
+      <!-- Insurance -->
+      <div class="modal-section">
+        <div class="modal-section-title">🛡️ Insurance & Billing</div>
+        <div class="modal-grid">
+          <div class="m-field"><label>Insurance Provider</label><input type="text" id="modal-insurance" placeholder="e.g. Star Health, CGHS" /></div>
+          <div class="m-field"><label>Policy Number</label><input type="text" id="modal-policy" placeholder="Policy no." /></div>
+          <div class="m-field"><label>Address</label><input type="text" id="modal-address" placeholder="Patient's address" /></div>
+          <div class="m-field"><label>Admission Date</label><input type="date" id="modal-admit" /></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-modal-save" onclick="savePatientDetails()">💾 Save Details</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="view-login" class="view active">
+  <div class="ecg-bg">
+    <div class="ecg-grid"></div>
+    <div class="vital-orb orb1"></div>
+    <div class="vital-orb orb2"></div>
+    <div class="ecg-line">
+      <svg class="ecg-svg" viewBox="0 0 1200 160" preserveAspectRatio="none" height="160">
+        <polyline points="0,80 60,80 80,80 100,16 115,128 130,64 145,80 260,80 280,80 300,16 315,128 330,64 345,80 460,80 480,80 500,16 515,128 530,64 545,80 660,80 680,80 700,16 715,128 730,64 745,80 860,80 880,80 900,16 915,128 930,64 945,80 1060,80 1080,80 1100,16 1115,128 1130,64 1145,80 1200,80"
+          stroke="rgba(0,200,83,0.4)" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="login-wrap">
+    <div class="login-header">
+      <div class="cross-icon"><div class="cross-ring"></div><div class="cross-ring2"></div></div>
+      <h1>HMS</h1>
+      <div class="tagline">Hospital Management System · GIETU 2026</div>
+      <div><div class="team-a4-badge">⚕️ TEAM A4</div></div>
+    </div>
+
+    <div class="login-vitals">
+      <div class="lv-card"><div class="lv-icon">❤️</div><div><div class="lv-val" id="lv-hr">72</div><div class="lv-label">BPM</div></div><div class="lv-dot g"></div></div>
+      <div class="lv-card"><div class="lv-icon">🩸</div><div><div class="lv-val">120/80</div><div class="lv-label">BP mmHg</div></div><div class="lv-dot c"></div></div>
+      <div class="lv-card"><div class="lv-icon">🌡️</div><div><div class="lv-val">98.6°</div><div class="lv-label">TEMP F</div></div><div class="lv-dot a"></div></div>
+    </div>
+
+    <div class="login-card">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchLoginTab('staff',this)">👨‍⚕️ Staff Login</button>
+        <button class="tab-btn" onclick="switchLoginTab('patient',this)">🧑 Patient Portal</button>
+      </div>
+      <div id="tab-staff" class="tab-panel active">
+        <div class="field"><label>Staff ID</label><input type="text" id="staff-id" placeholder="Enter staff ID" /></div>
+        <div class="field"><label>Password</label><input type="password" id="staff-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')staffLogin()" /></div>
+        <button class="btn-login" onclick="staffLogin()">🔐 Access Control Center</button>
+        <div class="login-note">Default: admin / gietu2026</div>
+      </div>
+      <div id="tab-patient" class="tab-panel">
+        <div class="pa-note">Check your queue position, estimated wait time and treatment status — no login needed.</div>
+        <button class="patient-access-btn" onclick="patientLogin()">🏥 Enter Patient Portal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="view-app" class="view">
+
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <div class="sb-cross"></div>
+      <div>
+        <div class="sb-title">HMS</div>
+        <div class="sb-sub">GIETU 2026</div>
+        <div class="sb-team">TEAM A4</div>
+      </div>
+    </div>
+
+    <!-- Team A4 strip -->
+    <div class="a4-strip">
+      <div class="a4-icon">⚕️</div>
+      <div class="a4-text">DEVELOPED BY TEAM A4</div>
+    </div>
+
+    <!-- Vitals -->
+    <div class="sb-vitals">
+      <div class="sv-row"><span class="sv-label">HR</span><div class="sv-bar-wrap"><div class="sv-bar-fill g" id="sb-hr-bar" style="width:72%"></div></div><span class="sv-val g" id="sb-hr">72 bpm</span></div>
+      <div class="sv-row"><span class="sv-label">SPO₂</span><div class="sv-bar-wrap"><div class="sv-bar-fill c" style="width:98%"></div></div><span class="sv-val c">98%</span></div>
+      <div class="sv-row"><span class="sv-label">TEMP</span><div class="sv-bar-wrap"><div class="sv-bar-fill a" style="width:60%"></div></div><span class="sv-val a">98.6°F</span></div>
+    </div>
+
+    <!-- ECG -->
+    <div class="sb-ecg">
+      <svg viewBox="0 0 220 32" preserveAspectRatio="none">
+        <polyline style="stroke:var(--green);stroke-width:1.5;fill:none;stroke-linecap:round;" points="0,16 18,16 26,16 32,4 36,26 40,12 44,16 70,16 78,16 84,4 88,26 92,12 96,16 122,16 130,16 136,4 140,26 144,12 148,16 174,16 182,16 188,4 192,26 196,12 200,16 220,16"/>
+      </svg>
+    </div>
+
+    <!-- Staff Nav -->
+    <div class="sidebar-nav" id="staff-nav">
+      <div class="sidebar-section">Dashboard</div>
+      <div class="nav-item active" onclick="setPage('queue',this)"><div class="n-icon">📋</div> Priority Queue</div>
+      <div class="nav-item" onclick="setPage('history',this)"><div class="n-icon">📁</div> Treatment History</div>
+      <div class="nav-item" onclick="setPage('stats',this)"><div class="n-icon">📊</div> Analytics</div>
+    </div>
+
+    <!-- Patient Nav -->
+    <div class="sidebar-nav" id="patient-nav" style="display:none">
+      <div class="patient-info-note">Enter your Patient ID to check real-time queue status and AI wait prediction.</div>
+      <div class="nav-item active" onclick="setPage('patient-status',this)"><div class="n-icon">🎫</div> My Status</div>
+    </div>
+
+    <!-- Registration form (staff) -->
+    <div class="sb-reg" id="reg-form-wrap">
+      <div class="sb-reg-title">Quick Registration</div>
+      <div class="reg-row">
+        <div class="reg-field"><label>Name</label><input type="text" id="reg-name" placeholder="Full name" /></div>
+        <div class="reg-field"><label>Age</label><input type="number" id="reg-age" placeholder="Age" min="0" max="120" style="width:100%" /></div>
+      </div>
+      <div class="reg-row">
+        <div class="reg-field"><label>Blood Group</label>
+          <select id="reg-blood">
+            <option value="">BG</option>
+            <option>A+</option><option>A−</option><option>B+</option><option>B−</option>
+            <option>AB+</option><option>AB−</option><option>O+</option><option>O−</option>
+          </select>
+        </div>
+        <div class="reg-field"><label>Gender</label>
+          <select id="reg-gender">
+            <option value="">Sex</option>
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="reg-field"><label>Disease / Complaint</label><input type="text" id="reg-disease" placeholder="e.g. Chest Pain" oninput="autoSeverity()" /></div>
+      <div class="reg-field"><label>Gmail</label><input type="email" id="reg-gmail" placeholder="patient@gmail.com" /></div>
+      <div class="reg-field"><label>Phone</label><input type="tel" id="reg-phone" placeholder="+91 9XXXXXXXXX" /></div>
+      <div class="reg-field">
+        <label>Severity</label>
+        <div class="sev-row">
+          <span class="sev-val" id="sev-display">3</span>
+          <input type="range" min="1" max="5" value="3" id="reg-severity" oninput="document.getElementById('sev-display').textContent=this.value" />
+        </div>
+      </div>
+      <div class="reg-field"><label>Type</label>
+        <select id="reg-type"><option>Consultation</option><option>Emergency</option><option>Surgery</option></select>
+      </div>
+      <button class="btn-queue" onclick="addPatient()">⚡ Add to Queue</button>
+    </div>
+
+    <div class="sb-bottom">
+      <button class="logout-btn" onclick="logout()">← Sign Out</button>
+    </div>
+    <div class="a4-footer"><div class="a4f">© TEAM A4 · GIETU 2026</div></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-wrap">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="topbar-title" id="topbar-title">Staff Control Center</div>
+          <div class="topbar-subtitle">Hospital Management System</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="tb-time" id="tb-clock">--:--:--</div>
+        <div class="team-topbar">⚕️ TEAM A4</div>
+        <button class="email-status-btn disconnected" id="emailStatusBtn" onclick="openEmailSetup()" title="Configure Doctor Email">
+          <div class="email-status-dot off" id="emailStatusDot"></div>
+          <span id="emailStatusText">📧 Setup Email</span>
+        </button>
+        <div class="tb-badge staff" id="tb-badge">
+          <div class="tb-dot b"></div>
+          <span id="tb-role">Staff</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- Queue Page -->
+      <div id="page-queue">
+        <div class="page-header">
+          <div class="ph-breadcrumb">HMS / Dashboard / Queue</div>
+          <div class="ph-title">AI Priority Queue</div>
+          <div class="ph-sub">Patients auto-sorted by severity, wait time & emergency status</div>
+        </div>
+        <div id="now-serving-wrap"></div>
+        <div class="stats-grid">
+          <div class="stat-card s-blue"><div class="sc-label">In Queue</div><div class="sc-value c-blue" id="stat-queue">0</div><div class="sc-sub">Active patients</div><div class="sc-icon">🏥</div></div>
+          <div class="stat-card s-green"><div class="sc-label">Treated Today</div><div class="sc-value c-green" id="stat-treated">0</div><div class="sc-sub">Discharged</div><div class="sc-icon">✅</div></div>
+          <div class="stat-card s-red"><div class="sc-label">Emergencies</div><div class="sc-value c-red" id="stat-emg">0</div><div class="sc-sub">Critical cases</div><div class="sc-icon">🚨</div></div>
+          <div class="stat-card s-amber"><div class="sc-label">Avg Wait</div><div class="sc-value c-amber" id="stat-wait">—</div><div class="sc-sub">Minutes</div><div class="sc-icon">⏱️</div></div>
+        </div>
+        <div class="search-wrap"><input type="text" id="search-input" placeholder="Search by name, token, blood group, disease…" oninput="renderSearch()" /></div>
+        <div id="search-results"></div>
+        <div class="section-bar">
+          <h2>🏥 Active Patient Queue</h2>
+          <button class="btn-treat" onclick="treatNext()">✅ Treat Next Patient</button>
+        </div>
+        <div class="table-card">
+          <table class="q-table">
+            <thead><tr><th>#</th><th>Token</th><th>Patient</th><th>Blood</th><th>Type</th><th>Sev.</th><th>Status</th><th>Wait</th><th>Actions</th></tr></thead>
+            <tbody id="queue-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- History Page -->
+      <div id="page-history" style="display:none">
+        <div class="page-header">
+          <div class="ph-breadcrumb">HMS / Records / History</div>
+          <div class="ph-title">Treatment History</div>
+          <div class="ph-sub">All discharged patients with full records</div>
+        </div>
+        <div class="table-card">
+          <table class="q-table">
+            <thead><tr><th>#</th><th>Token</th><th>Patient</th><th>Age</th><th>Blood</th><th>Disease</th><th>Type</th><th>Gmail</th><th>Actions</th></tr></thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Stats Page -->
+      <div id="page-stats" style="display:none">
+        <div class="page-header">
+          <div class="ph-breadcrumb">HMS / Analytics</div>
+          <div class="ph-title">Hospital Analytics</div>
+          <div class="ph-sub">Team A4 · Operational Overview</div>
+        </div>
+        <div class="stats-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:20px;">
+          <div class="stat-card s-blue"><div class="sc-label">Total Registered</div><div class="sc-value c-blue" id="a-total">0</div><div class="sc-icon">👥</div></div>
+          <div class="stat-card s-green"><div class="sc-label">Treatment Rate</div><div class="sc-value c-green" id="a-rate">0%</div><div class="sc-icon">📈</div></div>
+          <div class="stat-card s-amber"><div class="sc-label">Avg Severity</div><div class="sc-value c-amber" id="a-sev">0</div><div class="sc-icon">⚠️</div></div>
+          <div class="stat-card s-red"><div class="sc-label">Surgery Cases</div><div class="sc-value c-red" id="a-surg">0</div><div class="sc-icon">🔪</div></div>
+        </div>
+        <div class="table-card" style="padding:24px;">
+          <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:16px;">Disease Breakdown</h3>
+          <div id="disease-breakdown"></div>
+        </div>
+      </div>
+
+      <!-- Patient Status Page -->
+      <div id="page-patient-status" style="display:none">
+        <div class="page-header">
+          <div class="ph-breadcrumb">HMS / Patient Portal</div>
+          <div class="ph-title">Your Queue Status</div>
+          <div class="ph-sub">Real-time position & AI-predicted wait time · Team A4</div>
+        </div>
+        <div id="patient-now-serving-wrap"></div>
+        <div class="pid-input-wrap">
+          <label>Your Patient ID</label>
+          <input type="text" id="pid-input" placeholder="e.g. P1" oninput="lookupPatient()" />
+        </div>
+        <div id="patient-result"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL SETUP MODAL -->
+<div class="email-setup-overlay" id="emailSetupOverlay">
+  <div class="email-setup-modal">
+    <div class="esm-header">
+      <div class="esm-icon">📧</div>
+      <div>
+        <div class="esm-title">Doctor Email Setup</div>
+        <div class="esm-sub">Connect your Gmail to send real emails to patients</div>
+      </div>
+    </div>
+    <div class="esm-body">
+      <div id="esm-connected-banner" style="display:none" class="esm-connected">
+        <div class="ec-icon">✅</div>
+        <div>
+          <div class="ec-text">Gmail Connected!</div>
+          <div class="ec-sub" id="esm-connected-email"></div>
+        </div>
+      </div>
+
+      <div class="esm-step">
+        <div class="esm-step-num">1</div>
+        <div class="esm-step-content">
+          <div class="esm-step-title">Create a free EmailJS account</div>
+          <div class="esm-step-desc">
+            Go to <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> → Sign up free → Connect your Gmail account under <strong>Email Services</strong> → Create a service and note your <strong>Service ID</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div class="esm-step">
+        <div class="esm-step-num">2</div>
+        <div class="esm-step-content">
+          <div class="esm-step-title">Create an Email Template</div>
+          <div class="esm-step-desc">
+            In EmailJS → <strong>Email Templates</strong> → Create template with these variables:<br>
+            <code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;font-size:11px;">{{to_email}}, {{patient_name}}, {{patient_id}}, {{disease}}, {{doctor_name}}, {{message}}, {{hospital_name}}</code><br>
+            Note your <strong>Template ID</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div class="esm-step">
+        <div class="esm-step-num">3</div>
+        <div class="esm-step-content">
+          <div class="esm-step-title">Get your Public Key</div>
+          <div class="esm-step-desc">
+            In EmailJS → <strong>Account → API Keys</strong> → Copy your <strong>Public Key</strong>.
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:8px 0 20px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;">Enter Your EmailJS Credentials</div>
+
+      <div class="esm-field">
+        <label>Your Gmail (Doctor's Email)</label>
+        <input type="email" id="esm-gmail" placeholder="doctor@gmail.com" />
+      </div>
+      <div class="esm-field">
+        <label>Doctor Name (shown in emails)</label>
+        <input type="text" id="esm-docname" placeholder="Dr. A. Kumar" />
+      </div>
+      <div class="esm-field">
+        <label>EmailJS Public Key</label>
+        <input type="text" id="esm-pubkey" placeholder="xxxxxxxxxxxxxxxxxxxxxx" />
+      </div>
+      <div class="esm-field">
+        <label>EmailJS Service ID</label>
+        <input type="text" id="esm-service" placeholder="service_xxxxxxx" />
+      </div>
+      <div class="esm-field">
+        <label>EmailJS Template ID</label>
+        <input type="text" id="esm-template" placeholder="template_xxxxxxx" />
+      </div>
+    </div>
+    <div class="esm-footer">
+      <button class="btn-esm-close" onclick="closeEmailSetup()">✕ Close</button>
+      <button class="btn-esm-test" onclick="testEmailConnection()">🧪 Test</button>
+      <button class="btn-esm-save" onclick="saveEmailConfig()">💾 Save & Connect</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════
+// EMAIL CONFIG
+// ════════════════════════════
+let emailConfig = JSON.parse(localStorage.getItem('hms_email_config') || 'null');
+
+function saveEmailConfig() {
+  const cfg = {
+    gmail: document.getElementById('esm-gmail').value.trim(),
+    docName: document.getElementById('esm-docname').value.trim(),
+    pubKey: document.getElementById('esm-pubkey').value.trim(),
+    serviceId: document.getElementById('esm-service').value.trim(),
+    templateId: document.getElementById('esm-template').value.trim(),
+  };
+  if (!cfg.gmail || !cfg.pubKey || !cfg.serviceId || !cfg.templateId) {
+    toast('Please fill all EmailJS fields','error'); return;
+  }
+  emailConfig = cfg;
+  localStorage.setItem('hms_email_config', JSON.stringify(cfg));
+  emailjs.init(cfg.pubKey);
+  updateEmailStatus();
+  closeEmailSetup();
+  toast(`✅ Gmail connected: ${cfg.gmail}`, 'success');
+}
+
+function loadEmailConfig() {
+  if (!emailConfig) return;
+  emailjs.init(emailConfig.pubKey);
+  document.getElementById('esm-gmail').value = emailConfig.gmail || '';
+  document.getElementById('esm-docname').value = emailConfig.docName || '';
+  document.getElementById('esm-pubkey').value = emailConfig.pubKey || '';
+  document.getElementById('esm-service').value = emailConfig.serviceId || '';
+  document.getElementById('esm-template').value = emailConfig.templateId || '';
+  updateEmailStatus();
+}
+
+function updateEmailStatus() {
+  const btn = document.getElementById('emailStatusBtn');
+  const dot = document.getElementById('emailStatusDot');
+  const txt = document.getElementById('emailStatusText');
+  const banner = document.getElementById('esm-connected-banner');
+  const bannerEmail = document.getElementById('esm-connected-email');
+  if (emailConfig && emailConfig.gmail) {
+    btn.className = 'email-status-btn connected';
+    dot.className = 'email-status-dot on';
+    txt.textContent = '📧 ' + emailConfig.gmail;
+    banner.style.display = 'flex';
+    bannerEmail.textContent = 'Sending as: ' + emailConfig.gmail + ' (' + (emailConfig.docName || 'Doctor') + ')';
+  } else {
+    btn.className = 'email-status-btn disconnected';
+    dot.className = 'email-status-dot off';
+    txt.textContent = '📧 Setup Email';
+    banner.style.display = 'none';
+  }
+}
+
+function openEmailSetup() {
+  loadEmailConfig();
+  document.getElementById('emailSetupOverlay').classList.add('open');
+}
+function closeEmailSetup() {
+  document.getElementById('emailSetupOverlay').classList.remove('open');
+}
+
+async function testEmailConnection() {
+  if (!emailConfig) { toast('Save config first','error'); return; }
+  toast('📨 Sending test email to ' + emailConfig.gmail + '...', 'info');
+  try {
+    await emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
+      to_email: emailConfig.gmail,
+      patient_name: 'Test Patient',
+      patient_id: 'P-TEST',
+      disease: 'General Checkup',
+      doctor_name: emailConfig.docName || 'Doctor',
+      message: 'This is a test email from HMS – Hospital Management System (Team A4). Email integration is working correctly!',
+      hospital_name: 'HMS – Team A4 Hospital',
+    });
+    toast('✅ Test email sent to ' + emailConfig.gmail + '!', 'success');
+  } catch (err) {
+    toast('❌ Email failed: ' + (err.text || err.message || 'Check credentials'), 'error');
+  }
+}
+
+async function sendRealEmail(patientEmail, patientName, patientId, disease, type, prescription) {
+  if (!emailConfig || !emailConfig.pubKey) {
+    toast('Doctor email not configured. Click "Setup Email" in topbar.', 'error');
+    return false;
+  }
+  const msgLines = [
+    `Dear ${patientName},`,
+    ``,
+    `This is your official ${type === 'prescription' ? 'prescription' : 'medical report'} from HMS.`,
+    ``,
+    `Patient ID: ${patientId}`,
+    `Condition: ${disease}`,
+    prescription ? `Prescription / Notes:\n${prescription}` : '',
+    ``,
+    `Please follow all instructions carefully. For questions, contact your doctor.`,
+    ``,
+    `Regards,`,
+    `${emailConfig.docName || 'The Doctor'}`,
+    `HMS – Team A4 Hospital`,
+  ].join('\n');
+
+  try {
+    await emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
+      to_email: patientEmail,
+      patient_name: patientName,
+      patient_id: patientId,
+      disease: disease,
+      doctor_name: emailConfig.docName || 'Doctor',
+      message: msgLines,
+      hospital_name: 'HMS – Team A4 Hospital',
+    });
+    return true;
+  } catch (err) {
+    toast('❌ Email error: ' + (err.text || err.message || 'Check EmailJS config'), 'error');
+    return false;
+  }
+}
+
+// ════════════════════════════
+// DISEASE MAP
+// ════════════════════════════
+const DISEASE_MAP = {
+  "Chest Pain":5,"Cardiac Arrest":5,"Severe Bleeding":5,"Surgery":5,
+  "Bone Fracture":4,"High Fever":4,"Deep Cut":4,
+  "Fever":2,"Cough":2,"Flu":2,
+  "Vaccination":1,"General Checkup":1,"Skin Rash":1
+};
+
+// ════════════════════════════
+// STATE
+// ════════════════════════════
+let state = {
+  role: null,
+  queue: JSON.parse(localStorage.getItem('hms_queue') || '[]'),
+  history: JSON.parse(localStorage.getItem('hms_history') || '[]'),
+  details: JSON.parse(localStorage.getItem('hms_details') || '{}') // keyed by patient id
+};
+
+// Seed demo data
+if (!state.queue.length && !state.history.length) {
+  const now = Date.now();
+  state.queue = [
+    {id:'P1',name:'Ravi Kumar',age:45,gender:'Male',blood:'B+',phone:'9876543210',gmail:'ravi.kumar@gmail.com',disease:'Chest Pain',severity:5,type:'Emergency',arrival:now-18*60000},
+    {id:'P2',name:'Priya Singh',age:32,gender:'Female',blood:'O+',phone:'9123456789',gmail:'priya.singh@gmail.com',disease:'Bone Fracture',severity:4,type:'Surgery',arrival:now-12*60000},
+    {id:'P3',name:'Amit Sharma',age:28,gender:'Male',blood:'A+',phone:'9000011111',gmail:'',disease:'High Fever',severity:4,type:'Consultation',arrival:now-8*60000},
+    {id:'P4',name:'Sneha Patel',age:19,gender:'Female',blood:'AB+',phone:'8888877777',gmail:'sneha.patel@gmail.com',disease:'Flu',severity:2,type:'Consultation',arrival:now-5*60000},
+    {id:'P5',name:'Arjun Nair',age:60,gender:'Male',blood:'O−',phone:'9999900000',gmail:'',disease:'General Checkup',severity:1,type:'Consultation',arrival:now-2*60000},
+  ];
+  state.history = [
+    {id:'P0',name:'Meera Joshi',age:35,gender:'Female',blood:'A−',phone:'9111122222',gmail:'meera.joshi@gmail.com',disease:'Skin Rash',severity:1,type:'Consultation',arrival:now-60*60000},
+  ];
+  save();
+}
+
+function save() {
+  localStorage.setItem('hms_queue', JSON.stringify(state.queue));
+  localStorage.setItem('hms_history', JSON.stringify(state.history));
+  localStorage.setItem('hms_details', JSON.stringify(state.details));
+}
+
+// ════════════════════════════
+// CLOCK + VITALS
+// ════════════════════════════
+function updateClock() {
+  const el = document.getElementById('tb-clock');
+  if (el) el.textContent = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+let hr = 72;
+setInterval(() => {
+  hr = 68 + Math.floor(Math.random()*14);
+  const el = document.getElementById('lv-hr');
+  const sb = document.getElementById('sb-hr');
+  const bar = document.getElementById('sb-hr-bar');
+  if (el) el.textContent = hr;
+  if (sb) sb.textContent = hr+' bpm';
+  if (bar) bar.style.width = (hr/120*100)+'%';
+}, 2000);
+
+// ════════════════════════════
+// AI ENGINE
+// ════════════════════════════
+function getOptQ() {
+  const now = Date.now();
+  return state.queue.map(p => {
+    const wait = (now - new Date(p.arrival).getTime()) / 60000;
+    const isEmg = ['Emergency','Surgery'].includes(p.type) || p.severity >= 5;
+    const score = (p.severity*15) + (wait*0.5) + (isEmg?50:0);
+    return {...p, _score:score, wait:Math.round(wait), isEmg};
+  }).sort((a,b) => b._score - a._score);
+}
+
+function predictWait(severity) { return Math.round(8*severity+2); }
+
+function nextId() {
+  const all = [...state.queue,...state.history];
+  const nums = all.map(p => parseInt(p.id.replace('P',''))).filter(n => !isNaN(n));
+  return `P${nums.length ? Math.max(...nums)+1 : 1}`;
+}
+
+// ════════════════════════════
+// LOGIN
+// ════════════════════════════
+function switchLoginTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+function staffLogin() {
+  const id = document.getElementById('staff-id').value.trim();
+  const pw = document.getElementById('staff-pw').value.trim();
+  if (id==='admin' && pw==='gietu2026') { state.role='staff'; showApp(); }
+  else toast('Invalid credentials. Try admin / gietu2026','error');
+}
+
+function patientLogin() { state.role='patient'; showApp(); }
+
+function showApp() {
+  document.getElementById('view-login').classList.remove('active');
+  document.getElementById('view-app').classList.add('active');
+  const isStaff = state.role==='staff';
+  document.getElementById('staff-nav').style.display = isStaff?'flex':'none';
+  document.getElementById('patient-nav').style.display = isStaff?'none':'flex';
+  document.getElementById('reg-form-wrap').style.display = isStaff?'block':'none';
+  const badge = document.getElementById('tb-badge');
+  badge.className = 'tb-badge '+(isStaff?'staff':'patient');
+  badge.querySelector('.tb-dot').className = 'tb-dot '+(isStaff?'b':'t');
+  document.getElementById('tb-role').textContent = isStaff?'Staff':'Patient';
+  document.getElementById('topbar-title').textContent = isStaff?'Staff Control Center':'Patient Portal';
+  showPage(isStaff?'queue':'patient-status');
+}
+
+function logout() {
+  state.role=null;
+  document.getElementById('view-app').classList.remove('active');
+  document.getElementById('view-login').classList.add('active');
+  document.getElementById('staff-id').value='';
+  document.getElementById('staff-pw').value='';
+}
+
+// ════════════════════════════
+// NAVIGATION
+// ════════════════════════════
+function setPage(page, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  showPage(page);
+}
+
+function showPage(page) {
+  ['queue','history','stats','patient-status'].forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if (el) el.style.display='none';
+  });
+  const target = document.getElementById('page-'+page);
+  if (target) target.style.display='block';
+  if (page==='queue') renderQueue();
+  if (page==='history') renderHistory();
+  if (page==='stats') renderStats();
+  if (page==='patient-status') renderPatientPortal();
+}
+
+// ════════════════════════════
+// RENDER
+// ════════════════════════════
+function renderQueue() {
+  const q = getOptQ();
+  renderNowServing(q);
+  renderStatsCards(q);
+  const tbody = document.getElementById('queue-body');
+  if (!tbody) return;
+  if (!q.length) {
+    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="ei">🎉</div>Queue is empty!</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = q.map((p,i) => `
+    <tr class="${p.isEmg?'emg-row':''}">
+      <td><span class="sl-pill ${i===0?'top':''}">${i+1}</span></td>
+      <td class="mono">${p.id}</td>
+      <td>
+        <div class="p-name">${p.name}</div>
+        <div class="p-meta">${p.age?p.age+'y':''} ${p.gender?'· '+p.gender:''} ${p.phone?'· '+p.phone:''}</div>
+      </td>
+      <td>${p.blood?`<span class="bg-pill">${p.blood}</span>`:'<span style="color:var(--text3);font-size:11px;">—</span>'}</td>
+      <td>${typeBadge(p.type)}</td>
+      <td>${sevDots(p.severity)}</td>
+      <td>${p.isEmg?'<span class="badge badge-emergency">🚨 CRITICAL</span>':'<span class="badge badge-stable">✅ STABLE</span>'}</td>
+      <td><span class="wait-chip">${p.wait}m</span></td>
+      <td style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-view" onclick="openModal('${p.id}')">📋 Details</button>
+        ${p.gmail?`<button class="btn-email" onclick="quickEmail('${p.id}')">📧 Email</button>`:''}
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderNowServing(q) {
+  const wrap = document.getElementById('now-serving-wrap');
+  if (!wrap) return;
+  if (!q.length) { wrap.innerHTML=''; return; }
+  const c = q[0];
+  wrap.innerHTML=`
+    <div class="now-serving">
+      <div class="ns-ecg-bg"><svg viewBox="0 0 400 80" preserveAspectRatio="none"><polyline points="0,40 40,40 60,40 70,10 78,60 85,30 92,40 140,40 160,40 170,10 178,60 185,30 192,40 240,40 260,40 270,10 278,60 285,30 292,40 340,40 360,40 370,10 378,60 385,30 392,40 400,40" stroke="white" stroke-width="2" fill="none"/></svg></div>
+      <div class="ns-pulse-ring">🏥</div>
+      <div>
+        <div class="ns-label">Now Serving</div>
+        <div class="ns-token">${c.id}</div>
+        <div class="ns-name">${c.name}${c.age?' · '+c.age+'y':''}${c.blood?' · <span style="color:var(--red)">'+c.blood+'</span>':''}</div>
+      </div>
+      <div class="ns-details">
+        <div><span class="badge ${c.isEmg?'badge-emergency':'badge-stable'}">${c.isEmg?'🚨 EMERGENCY':'✅ STABLE'}</span></div>
+        <div class="ns-wait">Waited: ${c.wait}m · ${c.disease}</div>
+        ${c.gmail?`<div class="ns-wait" style="margin-top:4px;">📧 ${c.gmail}</div>`:''}
+      </div>
+    </div>
+  `;
+}
+
+function renderStatsCards(q) {
+  const emg = q.filter(p=>p.isEmg).length;
+  const avgWait = q.length ? Math.round(q.reduce((a,p)=>a+p.wait,0)/q.length) : 0;
+  setText('stat-queue', state.queue.length);
+  setText('stat-treated', state.history.length);
+  setText('stat-emg', emg);
+  setText('stat-wait', q.length ? avgWait+'m':'—');
+}
+
+function renderHistory() {
+  const tbody = document.getElementById('history-body');
+  if (!tbody) return;
+  if (!state.history.length) {
+    tbody.innerHTML=`<tr><td colspan="9"><div class="empty-state"><div class="ei">📂</div>No treatment records yet</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = state.history.slice().reverse().map((p,i) => `
+    <tr>
+      <td class="mono">${i+1}</td>
+      <td class="mono">${p.id}</td>
+      <td><div class="p-name">${p.name}</div></td>
+      <td class="mono">${p.age||'—'}</td>
+      <td>${p.blood?`<span class="bg-pill">${p.blood}</span>`:'—'}</td>
+      <td class="mono">${p.disease}</td>
+      <td>${typeBadge(p.type)}</td>
+      <td style="font-size:11px;color:var(--text3);font-family:var(--mono);">${p.gmail||'<span style="opacity:0.4">No email</span>'}</td>
+      <td style="display:flex;gap:5px;">
+        <button class="btn-view" onclick="openModal('${p.id}','history')">📋 View</button>
+        ${p.gmail?`<button class="btn-email" onclick="quickEmail('${p.id}','history')">📧 Send</button>`:''}
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderPatientPortal() {
+  const q = getOptQ();
+  const wrap = document.getElementById('patient-now-serving-wrap');
+  if (wrap) {
+    if (q.length) {
+      const c = q[0];
+      wrap.innerHTML=`
+        <div class="patient-now-card">
+          <div class="pnc-ecg-bg"><svg viewBox="0 0 800 120" preserveAspectRatio="none"><polyline points="0,60 80,60 110,60 130,15 145,95 158,45 170,60 260,60 290,60 310,15 325,95 338,45 350,60 440,60 470,60 490,15 505,95 518,45 530,60 620,60 650,60 670,15 685,95 698,45 710,60 800,60" stroke="white" stroke-width="2" fill="none"/></svg></div>
+          <div class="pnc-label">Currently Serving</div>
+          <div class="pnc-token">${c.id}</div>
+          <div class="pnc-name">${c.name}</div>
+        </div>`;
+    } else {
+      wrap.innerHTML=`<div class="patient-now-card" style="opacity:0.5"><div class="pnc-label">No Active Queue</div><div class="pnc-token">—</div></div>`;
+    }
+  }
+}
+
+function renderStats() {
+  const all = [...state.queue,...state.history];
+  setText('a-total',all.length);
+  const rate = all.length?Math.round(state.history.length/all.length*100):0;
+  setText('a-rate',rate+'%');
+  const avgSev = all.length?(all.reduce((a,p)=>a+p.severity,0)/all.length).toFixed(1):0;
+  setText('a-sev',avgSev);
+  setText('a-surg',all.filter(p=>p.type==='Surgery').length);
+  const dmap={};
+  all.forEach(p=>{dmap[p.disease]=(dmap[p.disease]||0)+1;});
+  const sorted=Object.entries(dmap).sort((a,b)=>b[1]-a[1]);
+  const max=sorted[0]?.[1]||1;
+  const db=document.getElementById('disease-breakdown');
+  if (db) db.innerHTML=sorted.map(([d,c])=>`
+    <div class="a-bar-row">
+      <div class="a-bar-label">${d}</div>
+      <div class="a-bar-track"><div class="a-bar-fill" style="width:${(c/max)*100}%"></div></div>
+      <div class="a-bar-count">${c}</div>
+    </div>`).join('')||'<div style="color:var(--text3);font-size:13px;">No data yet</div>';
+}
+
+function renderSearch() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const results = document.getElementById('search-results');
+  if (!q) { results.innerHTML=''; return; }
+  const all = [...state.queue,...state.history];
+  const inQ = new Set(state.queue.map(p=>p.id));
+  const matches = all.filter(p =>
+    p.name.toLowerCase().includes(q)||p.id.toLowerCase().includes(q)||
+    p.disease.toLowerCase().includes(q)||(p.blood||'').toLowerCase().includes(q)||
+    (p.gmail||'').toLowerCase().includes(q)||(p.phone||'').toLowerCase().includes(q)
+  );
+  if (!matches.length) { results.innerHTML=`<div class="msg-error">❌ No records found for "${q}"</div>`; return; }
+  results.innerHTML=`<div class="table-card" style="margin-bottom:18px;"><table class="q-table"><thead><tr><th>Token</th><th>Patient</th><th>Blood</th><th>Disease</th><th>Status</th><th>Gmail</th></tr></thead><tbody>${matches.map(p=>`<tr><td class="mono">${p.id}</td><td><div class="p-name">${p.name}</div><div class="p-meta">${p.age||''}y</div></td><td>${p.blood?`<span class="bg-pill">${p.blood}</span>`:'—'}</td><td class="mono">${p.disease}</td><td>${inQ.has(p.id)?'<span class="badge badge-consultation">In Queue</span>':'<span class="badge badge-stable">Treated</span>'}</td><td style="font-size:11px;font-family:var(--mono);color:var(--text3);">${p.gmail||'—'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+function lookupPatient() {
+  const pid = document.getElementById('pid-input').value.trim().toUpperCase();
+  const result = document.getElementById('patient-result');
+  if (!pid) { result.innerHTML=''; return; }
+  const q = getOptQ();
+  const match = q.find(p=>p.id.toUpperCase()===pid);
+  const hist = state.history.find(p=>p.id.toUpperCase()===pid);
+  if (match) {
+    const wait = predictWait(match.severity);
+    const sevColor = match.severity>=4?'var(--red)':match.severity<=2?'var(--teal)':'var(--amber)';
+    result.innerHTML=`
+      <div class="patient-result-card">
+        <div class="prc-header">
+          <div class="prc-avatar">🧑</div>
+          <div style="flex:1">
+            <div class="prc-name">${match.name}</div>
+            <div class="prc-id">${match.id} · ${match.disease} · ${match.type}${match.blood?' · <span style="color:var(--red);font-weight:700">'+match.blood+'</span>':''}</div>
+          </div>
+          <div>${match.isEmg?'<span class="badge badge-emergency">🚨 EMERGENCY</span>':'<span class="badge badge-stable">✅ STABLE</span>'}</div>
+        </div>
+        <div class="prc-stats">
+          <div class="prc-stat"><div class="prc-stat-label">Position</div><div class="prc-stat-value" style="color:var(--blue)">#${q.indexOf(match)+1}</div></div>
+          <div class="prc-stat"><div class="prc-stat-label">Age</div><div class="prc-stat-value" style="color:var(--navy)">${match.age||'—'}</div></div>
+          <div class="prc-stat"><div class="prc-stat-label">Severity</div><div class="prc-stat-value" style="color:${sevColor}">Lvl ${match.severity}</div></div>
+          <div class="prc-stat"><div class="prc-stat-label">Waited</div><div class="prc-stat-value" style="color:var(--navy)">${match.wait}m</div></div>
+        </div>
+        <div class="ai-box">
+          <div style="font-size:28px;">🔮</div>
+          <div>
+            <div class="ai-label">AI Estimated Wait Time</div>
+            <div class="ai-val">${wait} <span style="font-size:15px;color:var(--text3);font-family:var(--sans);font-weight:400">minutes</span></div>
+            <div class="ai-sub">Based on severity ${match.severity}/5 · Queue: ${q.length} patients</div>
+          </div>
+        </div>
+        ${match.gmail?`<div style="margin-top:12px;padding:12px 16px;background:rgba(26,110,245,0.05);border:1px solid rgba(26,110,245,0.12);border-radius:var(--rs);font-size:12px;color:var(--text3);">📧 Reports & prescriptions will be sent to: <strong style="color:var(--blue)">${match.gmail}</strong></div>`:''}
+      </div>`;
+  } else if (hist) {
+    result.innerHTML=`<div class="msg-success">✅ Treatment complete for <strong>${hist.name}</strong>. ${hist.gmail?`Report sent to ${hist.gmail}.`:''} You may go home.</div>`;
+  } else {
+    result.innerHTML=`<div class="msg-error">❌ Patient ID "${pid}" not found. Please check with reception.</div>`;
+  }
+}
+
+// ════════════════════════════
+// ACTIONS
+// ════════════════════════════
+function addPatient() {
+  const name = document.getElementById('reg-name').value.trim();
+  const disease = document.getElementById('reg-disease').value.trim();
+  const age = parseInt(document.getElementById('reg-age').value)||null;
+  const blood = document.getElementById('reg-blood').value;
+  const gender = document.getElementById('reg-gender').value;
+  const gmail = document.getElementById('reg-gmail').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const severity = parseInt(document.getElementById('reg-severity').value);
+  const type = document.getElementById('reg-type').value;
+  if (!name||!disease) { toast('Please fill Name and Disease','error'); return; }
+  const p = {id:nextId(),name,disease,age,blood,gender,gmail,phone,severity,type,arrival:Date.now()};
+  state.queue.push(p);
+  save();
+  document.getElementById('reg-name').value='';
+  document.getElementById('reg-disease').value='';
+  document.getElementById('reg-age').value='';
+  document.getElementById('reg-blood').value='';
+  document.getElementById('reg-gender').value='';
+  document.getElementById('reg-gmail').value='';
+  document.getElementById('reg-phone').value='';
+  document.getElementById('reg-severity').value=3;
+  document.getElementById('sev-display').textContent='3';
+  renderQueue();
+  toast(`${name} (${p.id}) added to queue!`,'success');
+}
+
+async function treatNext() {
+  const q = getOptQ();
+  if (!q.length) { toast('Queue is empty','error'); return; }
+  const top = q[0];
+  const idx = state.queue.findIndex(p=>p.id===top.id);
+  const treated = state.queue.splice(idx,1)[0];
+  state.history.push(treated);
+  save(); launchConfetti(); renderQueue();
+  toast(`${treated.name} treated & discharged!`,'success');
+  if (treated.gmail) {
+    const det = state.details[treated.id] || {};
+    const sent = await sendRealEmail(treated.gmail, treated.name, treated.id, treated.disease, 'discharge', det.prescription || '');
+    if (sent) {
+      setTimeout(()=>toast(`📧 Discharge summary sent to ${treated.gmail}`,'info'),1200);
+    } else {
+      setTimeout(()=>toast(`ℹ️ Email not configured — discharge summary not sent`,'info'),1200);
+    }
+  }
+}
+
+function autoSeverity() {
+  const d = document.getElementById('reg-disease').value.trim();
+  const title = d.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+  if (DISEASE_MAP[title]) {
+    document.getElementById('reg-severity').value=DISEASE_MAP[title];
+    document.getElementById('sev-display').textContent=DISEASE_MAP[title];
+  }
+}
+
+// ════════════════════════════
+// MODAL
+// ════════════════════════════
+let currentModalId = null;
+let currentModalSource = 'queue';
+
+function openModal(id, source='queue') {
+  currentModalId = id;
+  currentModalSource = source;
+  const list = source==='queue' ? state.queue : state.history;
+  const p = list.find(x=>x.id===id);
+  if (!p) return;
+  const det = state.details[id] || {};
+
+  document.getElementById('modal-title').textContent = `Patient: ${p.name}`;
+  document.getElementById('modal-pid-label').textContent = `${id} · ${p.disease} · ${p.type}`;
+  document.getElementById('modal-gmail').value = p.gmail||det.gmail||'';
+  document.getElementById('modal-prescription').value = det.prescription||'';
+  document.getElementById('modal-name').value = p.name||'';
+  document.getElementById('modal-age').value = p.age||'';
+  document.getElementById('modal-gender').value = p.gender||'';
+  document.getElementById('modal-blood').value = p.blood||'';
+  document.getElementById('modal-phone').value = p.phone||'';
+  document.getElementById('modal-aadhaar').value = det.aadhaar||'';
+  document.getElementById('modal-disease').value = p.disease||'';
+  document.getElementById('modal-type').value = p.type||'Consultation';
+  document.getElementById('modal-allergies').value = det.allergies||'';
+  document.getElementById('modal-medications').value = det.medications||'';
+  document.getElementById('modal-conditions').value = det.conditions||'';
+  document.getElementById('modal-doctor').value = det.doctor||'';
+  document.getElementById('modal-ward').value = det.ward||'';
+  document.getElementById('modal-ec-name').value = det.ecName||'';
+  document.getElementById('modal-ec-rel').value = det.ecRel||'';
+  document.getElementById('modal-ec-phone').value = det.ecPhone||'';
+  document.getElementById('modal-insurance').value = det.insurance||'';
+  document.getElementById('modal-policy').value = det.policy||'';
+  document.getElementById('modal-address').value = det.address||'';
+  document.getElementById('modal-admit').value = det.admit||'';
+
+  document.getElementById('patientModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('patientModal').classList.remove('open');
+  currentModalId = null;
+}
+
+function savePatientDetails() {
+  if (!currentModalId) return;
+  const id = currentModalId;
+  const list = currentModalSource==='queue' ? state.queue : state.history;
+  const p = list.find(x=>x.id===id);
+  if (p) {
+    p.gmail = document.getElementById('modal-gmail').value.trim();
+    p.name = document.getElementById('modal-name').value.trim();
+    p.age = parseInt(document.getElementById('modal-age').value)||p.age;
+    p.gender = document.getElementById('modal-gender').value;
+    p.blood = document.getElementById('modal-blood').value;
+    p.phone = document.getElementById('modal-phone').value.trim();
+    p.disease = document.getElementById('modal-disease').value.trim();
+    p.type = document.getElementById('modal-type').value;
+  }
+  state.details[id] = {
+    gmail: document.getElementById('modal-gmail').value.trim(),
+    prescription: document.getElementById('modal-prescription').value,
+    aadhaar: document.getElementById('modal-aadhaar').value.trim(),
+    allergies: document.getElementById('modal-allergies').value.trim(),
+    medications: document.getElementById('modal-medications').value.trim(),
+    conditions: document.getElementById('modal-conditions').value.trim(),
+    doctor: document.getElementById('modal-doctor').value.trim(),
+    ward: document.getElementById('modal-ward').value.trim(),
+    ecName: document.getElementById('modal-ec-name').value.trim(),
+    ecRel: document.getElementById('modal-ec-rel').value.trim(),
+    ecPhone: document.getElementById('modal-ec-phone').value.trim(),
+    insurance: document.getElementById('modal-insurance').value.trim(),
+    policy: document.getElementById('modal-policy').value.trim(),
+    address: document.getElementById('modal-address').value.trim(),
+    admit: document.getElementById('modal-admit').value,
+  };
+  save();
+  closeModal();
+  renderQueue();
+  toast(`Details saved for ${p?p.name:'patient'}!`,'success');
+}
+
+async function sendEmail(type) {
+  const gmail = document.getElementById('modal-gmail').value.trim();
+  if (!gmail) { toast('Please enter patient Gmail first','error'); return; }
+  const id = currentModalId;
+  const list = currentModalSource==='queue' ? state.queue : state.history;
+  const p = list.find(x=>x.id===id);
+  const label = type==='prescription'?'Prescription':'Medical Report';
+  const prescription = document.getElementById('modal-prescription').value.trim();
+
+  if (!emailConfig || !emailConfig.pubKey) {
+    // Fallback: just show confirmation modal (no real send)
+    document.getElementById('mailSentAddr').textContent = gmail;
+    document.getElementById('mailSentMsg').innerHTML = `⚠️ Doctor email not configured.<br>Please click <strong>"📧 Setup Email"</strong> in the top bar to connect Gmail for real sending.`;
+    document.getElementById('mailSentOverlay').classList.add('open');
+    return;
+  }
+
+  // Show loading
+  const sendBtns = document.querySelectorAll('.btn-send-email');
+  sendBtns.forEach(b => { b.disabled=true; b.innerHTML=`<span class="sending-spinner"></span> Sending...`; });
+
+  const success = await sendRealEmail(gmail, p?p.name:'Patient', id, p?p.disease:'—', type, prescription);
+
+  sendBtns.forEach(b => { b.disabled=false; b.innerHTML = type==='prescription'?'💊 Send Prescription':'📄 Send Report'; });
+
+  if (success) {
+    document.getElementById('mailSentAddr').textContent = gmail;
+    document.getElementById('mailSentMsg').innerHTML = `The real <strong>${label}</strong> for <strong>${p?p.name:'patient'}</strong> has been sent to <span class="mse">${gmail}</span> via <strong>${emailConfig.gmail}</strong> ✅`;
+    document.getElementById('mailSentOverlay').classList.add('open');
+    toast(`📧 ${label} sent to ${gmail}`, 'success');
+  }
+}
+
+function quickEmail(id, source='queue') {
+  openModal(id, source);
+  setTimeout(()=>{
+    const el = document.getElementById('modal-gmail');
+    if (el) el.focus();
+  }, 200);
+}
+
+function closeMailSent() {
+  document.getElementById('mailSentOverlay').classList.remove('open');
+}
+
+// ════════════════════════════
+// HELPERS
+// ════════════════════════════
+function typeBadge(t) {
+  const m={'Emergency':'badge-emergency','Surgery':'badge-surgery','Consultation':'badge-consultation'};
+  return `<span class="badge ${m[t]||'badge-consultation'}">${t}</span>`;
+}
+
+function sevDots(s) {
+  return `<div class="sev-dots">${[1,2,3,4,5].map(i=>{
+    const on=i<=s;
+    const cls=on?(s>=4?'sd on hi':s<=2?'sd on lo':'sd on'):'sd';
+    return `<div class="${cls}"></div>`;
+  }).join('')}</div>`;
+}
+
+function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+
+function toast(msg,type='success') {
+  const c=document.getElementById('toastContainer');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span>${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span>${msg}`;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(),3800);
+}
+
+function launchConfetti() {
+  const colors=['#1a6ef5','#00bcd4','#00c853','#ff9800','#7c3aed'];
+  for(let i=0;i<70;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}vw;top:0;background:${colors[Math.floor(Math.random()*colors.length)]};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*0.6}s;animation-duration:${2+Math.random()*1.5}s;`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),4000);
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('patientModal').addEventListener('click', function(e){
+  if(e.target===this) closeModal();
+});
+document.getElementById('mailSentOverlay').addEventListener('click', function(e){
+  if(e.target===this) closeMailSent();
+});
+document.getElementById('emailSetupOverlay').addEventListener('click', function(e){
+  if(e.target===this) closeEmailSetup();
+});
+
+// Init email on load
+loadEmailConfig();
+
+// Auto-refresh
+setInterval(()=>{
+  if(state.role==='staff') renderQueue();
+  else if(state.role==='patient') renderPatientPortal();
+},30000);
+</script>
+</body>
+</html>
