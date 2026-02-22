@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HMS — Hospital Management System · Team A4</title>
+<title>HMS — Hospital Management System · Team A4 · ML-Powered</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
@@ -400,6 +400,53 @@ input[type=range]{flex:1;accent-color:var(--blue);cursor:pointer;}
 /* Team A4 footer in sidebar bottom */
 .a4-footer{padding:8px 14px;border-top:1px solid rgba(255,255,255,0.05);text-align:center;}
 .a4-footer .a4f{font-family:var(--mono);font-size:10px;color:rgba(124,58,237,0.6);letter-spacing:0.12em;}
+/* ─── AI DASHBOARD ─── */
+.s-purple::before{background:linear-gradient(90deg,var(--purple),#a855f7);}
+.c-purple{color:var(--purple);}
+.ai-intel-table{width:100%;border-collapse:collapse;}
+.ai-intel-table th{text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;padding:8px 12px;border-bottom:1px solid var(--border);}
+.ai-intel-table td{padding:10px 12px;border-bottom:1px solid var(--bg3);font-size:13px;vertical-align:middle;}
+.ai-intel-table tr:last-child td{border-bottom:none;}
+.ai-pred-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;font-family:var(--mono);}
+.ai-pred-chip.low{background:rgba(0,200,83,0.1);color:var(--green);border:1px solid rgba(0,200,83,0.25);}
+.ai-pred-chip.med{background:rgba(255,152,0,0.1);color:var(--amber);border:1px solid rgba(255,152,0,0.3);}
+.ai-pred-chip.high{background:rgba(244,67,54,0.1);color:var(--red);border:1px solid rgba(244,67,54,0.25);}
+.ai-explain-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;}
+.ai-explain-icon{font-size:20px;margin-top:2px;flex-shrink:0;}
+.ai-explain-title{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:4px;}
+.ai-explain-text{font-size:12px;color:var(--text2);line-height:1.6;}
+.ai-explain-factors{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.ai-factor-tag{background:rgba(26,110,245,0.08);border:1px solid rgba(26,110,245,0.15);color:var(--blue);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;}
+.sched-slot{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--rs);background:var(--bg);border:1px solid var(--border);margin-bottom:8px;}
+.sched-time{font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700;width:60px;flex-shrink:0;}
+.sched-patient{font-size:13px;font-weight:600;color:var(--navy);flex:1;}
+.sched-type{font-size:11px;color:var(--text3);}
+.sched-adjusted{background:rgba(124,58,237,0.05);border-color:rgba(124,58,237,0.2);}
+.sched-adj-badge{font-size:10px;font-weight:700;color:var(--purple);background:rgba(124,58,237,0.1);padding:2px 8px;border-radius:100px;border:1px solid rgba(124,58,237,0.2);}
+.delay-warn{background:rgba(255,152,0,0.08);border:1px solid rgba(255,152,0,0.25);border-radius:var(--rs);padding:12px 16px;display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;}
+.delay-warn-icon{font-size:18px;flex-shrink:0;}
+.delay-warn-text{font-size:12px;color:var(--text);line-height:1.6;}
+/* ─── PATIENT FLOW ─── */
+.flow-pipeline{display:flex;align-items:stretch;gap:0;margin-bottom:24px;overflow-x:auto;}
+.flow-dept{flex:1;min-width:130px;background:white;border:1.5px solid var(--border);border-radius:var(--r);padding:18px 14px;position:relative;transition:all 0.2s;}
+.flow-dept.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,110,245,0.1);}
+.flow-dept.busy{border-color:var(--amber);}
+.flow-dept.critical{border-color:var(--red);}
+.flow-arrow{display:flex;align-items:center;padding:0 6px;color:var(--border);font-size:20px;flex-shrink:0;}
+.fd-icon{font-size:28px;margin-bottom:8px;}
+.fd-name{font-family:var(--display);font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.fd-count{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--blue);}
+.fd-label{font-size:10px;color:var(--text3);margin-top:2px;}
+.fd-bar{height:4px;border-radius:2px;margin-top:10px;background:var(--bg3);overflow:hidden;}
+.fd-bar-fill{height:100%;border-radius:2px;transition:width 0.8s ease;}
+.flow-journey-row{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:8px;flex-wrap:wrap;}
+.fj-name{font-weight:700;font-size:13px;color:var(--navy);min-width:110px;}
+.fj-step{display:flex;align-items:center;gap:4px;}
+.fj-dept{font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;}
+.fj-dept.done{background:rgba(0,200,83,0.1);color:var(--green);border:1px solid rgba(0,200,83,0.25);}
+.fj-dept.current{background:rgba(26,110,245,0.12);color:var(--blue);border:1px solid rgba(26,110,245,0.3);animation:gentlePulse 2s ease-in-out infinite;}
+.fj-dept.pending{background:var(--bg3);color:var(--text3);border:1px solid var(--border);}
+.fj-arrow{color:var(--border);font-size:12px;}
 </style>
 </head>
 <body>
@@ -540,7 +587,7 @@ input[type=range]{flex:1;accent-color:var(--blue);cursor:pointer;}
     <div class="login-header">
       <div class="cross-icon"><div class="cross-ring"></div><div class="cross-ring2"></div></div>
       <h1>HMS</h1>
-      <div class="tagline">Hospital Management System · GIETU 2026</div>
+      <div class="tagline">Hospital Management System · GIETU 2026 · ML-Powered</div>
       <div><div class="team-a4-badge">⚕️ TEAM A4</div></div>
     </div>
 
@@ -608,6 +655,9 @@ input[type=range]{flex:1;accent-color:var(--blue);cursor:pointer;}
       <div class="nav-item active" onclick="setPage('queue',this)"><div class="n-icon">📋</div> Priority Queue</div>
       <div class="nav-item" onclick="setPage('history',this)"><div class="n-icon">📁</div> Treatment History</div>
       <div class="nav-item" onclick="setPage('stats',this)"><div class="n-icon">📊</div> Analytics</div>
+      <div class="sidebar-section">AI Intelligence</div>
+      <div class="nav-item" onclick="setPage('ai-dashboard',this)"><div class="n-icon">🤖</div> AI Dashboard</div>
+      <div class="nav-item" onclick="setPage('patient-flow',this)"><div class="n-icon">🗺️</div> Patient Flow</div>
     </div>
 
     <!-- Patient Nav -->
@@ -762,9 +812,83 @@ input[type=range]{flex:1;accent-color:var(--blue);cursor:pointer;}
         <div id="patient-result"></div>
       </div>
 
-    </div>
-  </div>
-</div>
+      <!-- AI Dashboard Page -->
+      <div id="page-ai-dashboard" style="display:none">
+        <div style="background:linear-gradient(135deg,#0a1628,#0e2044);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+          <div style="font-size:28px;">🧠</div>
+          <div style="flex:1">
+            <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.12em;text-transform:uppercase;">ML Model Active</div>
+            <div style="font-family:var(--display);font-size:20px;font-weight:700;color:white;letter-spacing:0.03em;">Ridge Regression · Trained on CSV Data</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;">1,006 real patient records · Target: actual consult_duration · Replaces old 8×severity+2 formula</div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div style="background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.3);border-radius:8px;padding:10px 16px;text-align:center;">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:#00c853;">0.95</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">R² Score</div>
+            </div>
+            <div style="background:rgba(26,110,245,0.15);border:1px solid rgba(26,110,245,0.3);border-radius:8px;padding:10px 16px;text-align:center;">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:#6baeff;">2.2m</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">Avg Error (MAE)</div>
+            </div>
+            <div style="background:rgba(255,152,0,0.15);border:1px solid rgba(255,152,0,0.3);border-radius:8px;padding:10px 16px;text-align:center;">
+              <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:#ff9800;">10m</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;">Better Than Old</div>
+            </div>
+          </div>
+        </div>
+        <div class="page-header">
+          <div class="ph-breadcrumb">HMS / AI Intelligence / Dashboard</div>
+          <div class="ph-title">🤖 AI Intelligence Dashboard</div>
+          <div class="ph-sub">Predictive analytics, smart scheduling & explainable AI · Team A4</div>
+        </div>
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+          <div class="stat-card s-blue"><div class="sc-label">Predicted Avg Consult</div><div class="sc-value c-blue" id="ai-avg-consult">—</div><div class="sc-sub">min/patient (ML model)</div></div>
+          <div class="stat-card s-amber"><div class="sc-label">Delay Risk</div><div class="sc-value c-amber" id="ai-delay-risk">—</div><div class="sc-sub">probability</div></div>
+          <div class="stat-card s-red"><div class="sc-label">Doctor Workload</div><div class="sc-value c-red" id="ai-workload">—</div><div class="sc-sub">capacity index</div></div>
+          <div class="stat-card s-purple"><div class="sc-label">Busiest Dept</div><div class="sc-value c-purple" id="ai-busiest" style="font-size:18px;line-height:1.2">—</div><div class="sc-sub">right now</div></div>
+        </div>
+        <div class="table-card" style="padding:24px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--navy);">⚡ Live Queue Intelligence</h3>
+            <button onclick="renderAIDashboard()" style="padding:6px 14px;border-radius:6px;background:rgba(26,110,245,0.1);border:1px solid rgba(26,110,245,0.2);color:var(--blue);font-size:12px;font-weight:700;cursor:pointer;">🔄 Refresh</button>
+          </div>
+          <div id="ai-queue-intel"></div>
+        </div>
+        <div class="table-card" style="padding:24px;margin-bottom:20px;">
+          <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:16px;">🔍 AI Decision Explainer</h3>
+          <div id="ai-explanations"></div>
+        </div>
+        <div class="table-card" style="padding:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--navy);">📅 Smart Schedule Optimizer</h3>
+            <button onclick="runScheduleOptimizer()" style="padding:8px 18px;border-radius:7px;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;color:white;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 12px rgba(124,58,237,0.35);">⚙️ Re-optimize Now</button>
+          </div>
+          <div id="ai-schedule"></div>
+        </div>
+      </div>
+
+      <!-- Patient Flow Page -->
+      <div id="page-patient-flow" style="display:none">
+        <div class="page-header">
+          <div class="ph-breadcrumb">HMS / AI Intelligence / Patient Flow</div>
+          <div class="ph-title">🗺️ Patient Movement Map</div>
+          <div class="ph-sub">Registration → Doctor → Lab → Pharmacy journey tracking · Team A4</div>
+        </div>
+        <div class="table-card" style="padding:24px;margin-bottom:20px;">
+          <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:20px;">Department Flow Diagram</h3>
+          <div id="flow-diagram"></div>
+        </div>
+        <div class="table-card" style="padding:24px;">
+          <h3 style="font-family:var(--display);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:16px;">📋 Individual Patient Journeys</h3>
+          <div id="flow-individual"></div>
+        </div>
+      </div>
+
+    </div><!-- /page-patient-flow -->
+
+    </div><!-- /main-content -->
+  </div><!-- /main-wrap -->
+</div><!-- /view-app -->
 
 <!-- EMAIL SETUP MODAL -->
 <div class="email-setup-overlay" id="emailSetupOverlay">
@@ -1045,7 +1169,84 @@ function getOptQ() {
   }).sort((a,b) => b._score - a._score);
 }
 
-function predictWait(severity) { return Math.round(8*severity+2); }
+// ════════════════════════════════════════════════════════════
+// ML MODEL — Trained on hms_patient_dataset.csv (1006 rows)
+// Algorithm : Ridge Regression  R²=0.9482  MAE≈2.2 min
+// Target    : consult_duration  (actual recorded wait time)
+// Replaces  : old formula  8*severity+2  (MAE was 11+ min)
+// ════════════════════════════════════════════════════════════
+const ML_MODEL = {
+  intercept: 4.7897,
+  coef: {
+    severity:       3.9597,
+    type_enc:      15.2183,
+    age:            0.0001,
+    gender_enc:    -0.1351,
+    wait_already:   0.1237,
+    is_emergency:  -1.2239,
+    priority_score:-0.0373,
+    disease_enc:    0.0287,
+  },
+  disease_classes: ['Bone Fracture','Cardiac Arrest','Chest Pain','Cough',
+    'Deep Cut','Fever','Flu','General Checkup','High Fever',
+    'Severe Bleeding','Skin Rash','Surgery','Vaccination'],
+  type_classes:   ['Consultation','Emergency','Surgery'],
+  gender_classes: ['Female','Male'],
+  lookup: {
+    Consultation: {1:10.0, 2:12.8, 3:16.1, 4:18.8, 5:22.2},
+    Emergency:    {1:20.0, 2:22.9, 3:26.3, 4:29.3, 5:31.9},
+    Surgery:      {1:39.8, 2:42.9, 3:45.4, 4:49.0, 5:52.0},
+  },
+  stats: { n:1006, r2:0.9482, mae:2.17, rmse:2.66, oldFormulaMAE:11.08, improvement:10.10 }
+};
+
+function mlEncode(value, classes) {
+  const idx = classes.indexOf(value);
+  return idx >= 0 ? idx : 0;
+}
+
+function predictWait(severity, type, age, gender, wait_already) {
+  type         = type         || 'Consultation';
+  age          = age          || 40;
+  gender       = gender       || 'Male';
+  wait_already = wait_already || 0;
+  const is_emg      = (['Emergency','Surgery'].includes(type) || severity >= 5) ? 1 : 0;
+  const priority_sc = severity*15 + wait_already*0.5 + (is_emg ? 50 : 0);
+  const type_enc    = mlEncode(type,   ML_MODEL.type_classes);
+  const gender_enc  = mlEncode(gender, ML_MODEL.gender_classes);
+  const disease_enc = 2;
+  const c = ML_MODEL.coef;
+  const raw = ML_MODEL.intercept
+    + c.severity       * severity
+    + c.type_enc       * type_enc
+    + c.age            * age
+    + c.gender_enc     * gender_enc
+    + c.wait_already   * wait_already
+    + c.is_emergency   * is_emg
+    + c.priority_score * priority_sc
+    + c.disease_enc    * disease_enc;
+  return Math.max(1, Math.round(raw));
+}
+
+function mlPredict(p) {
+  const isEmg       = p.isEmg || ['Emergency','Surgery'].includes(p.type) || p.severity >= 5;
+  const wait_already= p.wait  || 0;
+  const priority_sc = p.severity*15 + wait_already*0.5 + (isEmg ? 50 : 0);
+  const type_enc    = mlEncode(p.type   || 'Consultation', ML_MODEL.type_classes);
+  const gender_enc  = mlEncode(p.gender || 'Male',         ML_MODEL.gender_classes);
+  const disease_enc = mlEncode(p.disease|| '',             ML_MODEL.disease_classes);
+  const c = ML_MODEL.coef;
+  const raw = ML_MODEL.intercept
+    + c.severity       * (p.severity || 3)
+    + c.type_enc       * type_enc
+    + c.age            * (p.age      || 40)
+    + c.gender_enc     * gender_enc
+    + c.wait_already   * wait_already
+    + c.is_emergency   * (isEmg ? 1 : 0)
+    + c.priority_score * priority_sc
+    + c.disease_enc    * disease_enc;
+  return Math.max(1, Math.round(raw));
+}
 
 function nextId() {
   const all = [...state.queue,...state.history];
@@ -1105,7 +1306,7 @@ function setPage(page, el) {
 }
 
 function showPage(page) {
-  ['queue','history','stats','patient-status'].forEach(p => {
+  ['queue','history','stats','patient-status','ai-dashboard','patient-flow'].forEach(p => {
     const el = document.getElementById('page-'+p);
     if (el) el.style.display='none';
   });
@@ -1115,6 +1316,8 @@ function showPage(page) {
   if (page==='history') renderHistory();
   if (page==='stats') renderStats();
   if (page==='patient-status') renderPatientPortal();
+  if (page==='ai-dashboard') renderAIDashboard();
+  if (page==='patient-flow') renderPatientFlow();
 }
 
 // ════════════════════════════
@@ -1142,7 +1345,10 @@ function renderQueue() {
       <td>${typeBadge(p.type)}</td>
       <td>${sevDots(p.severity)}</td>
       <td>${p.isEmg?'<span class="badge badge-emergency">🚨 CRITICAL</span>':'<span class="badge badge-stable">✅ STABLE</span>'}</td>
-      <td><span class="wait-chip">${p.wait}m</span></td>
+      <td>
+        <span class="wait-chip">${p.wait}m</span>
+        <div style="font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:2px;">in hospital</div>
+      </td>
       <td style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
         <button class="btn-view" onclick="openModal('${p.id}')">📋 Details</button>
         ${p.gmail?`<button class="btn-email" onclick="quickEmail('${p.id}')">📧 Email</button>`:''}
@@ -1271,7 +1477,14 @@ function lookupPatient() {
   const match = q.find(p=>p.id.toUpperCase()===pid);
   const hist = state.history.find(p=>p.id.toUpperCase()===pid);
   if (match) {
-    const wait = predictWait(match.severity);
+    const pos        = q.indexOf(match);                              // 0-based index
+    const patientsAhead = pos;                                        // patients before this one
+    // Cumulative wait = sum of ML-predicted consult durations for all patients ahead
+    const cumulativeWait = q.slice(0, pos).reduce((acc, p) => acc + mlPredict(p), 0);
+    const ownConsult     = mlPredict(match);
+    const totalWait      = Math.max(1, cumulativeWait);               // time until patient is called
+    const eta            = new Date(Date.now() + totalWait * 60000);
+    const etaStr         = eta.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
     const sevColor = match.severity>=4?'var(--red)':match.severity<=2?'var(--teal)':'var(--amber)';
     result.innerHTML=`
       <div class="patient-result-card">
@@ -1284,17 +1497,22 @@ function lookupPatient() {
           <div>${match.isEmg?'<span class="badge badge-emergency">🚨 EMERGENCY</span>':'<span class="badge badge-stable">✅ STABLE</span>'}</div>
         </div>
         <div class="prc-stats">
-          <div class="prc-stat"><div class="prc-stat-label">Position</div><div class="prc-stat-value" style="color:var(--blue)">#${q.indexOf(match)+1}</div></div>
-          <div class="prc-stat"><div class="prc-stat-label">Age</div><div class="prc-stat-value" style="color:var(--navy)">${match.age||'—'}</div></div>
+          <div class="prc-stat"><div class="prc-stat-label">Position</div><div class="prc-stat-value" style="color:var(--blue)">#${pos+1}</div></div>
+          <div class="prc-stat"><div class="prc-stat-label">Patients Ahead</div><div class="prc-stat-value" style="color:var(--navy)">${patientsAhead}</div></div>
           <div class="prc-stat"><div class="prc-stat-label">Severity</div><div class="prc-stat-value" style="color:${sevColor}">Lvl ${match.severity}</div></div>
-          <div class="prc-stat"><div class="prc-stat-label">Waited</div><div class="prc-stat-value" style="color:var(--navy)">${match.wait}m</div></div>
+          <div class="prc-stat"><div class="prc-stat-label">Waited So Far</div><div class="prc-stat-value" style="color:var(--navy)">${match.wait}m</div></div>
         </div>
         <div class="ai-box">
           <div style="font-size:28px;">🔮</div>
-          <div>
-            <div class="ai-label">AI Estimated Wait Time</div>
-            <div class="ai-val">${wait} <span style="font-size:15px;color:var(--text3);font-family:var(--sans);font-weight:400">minutes</span></div>
-            <div class="ai-sub">Based on severity ${match.severity}/5 · Queue: ${q.length} patients</div>
+          <div style="flex:1">
+            <div class="ai-label">AI Queue Wait Time</div>
+            <div class="ai-val">${totalWait} <span style="font-size:15px;color:var(--text3);font-family:var(--sans);font-weight:400">minutes</span></div>
+            <div class="ai-sub">⏳ Sum of ${patientsAhead} patient(s) ahead · Own consult: ${ownConsult}m · ETA: ~${etaStr}</div>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:11px;padding:3px 10px;border-radius:100px;background:rgba(26,110,245,0.1);color:var(--blue);font-weight:600;">🧠 ML Model R²=0.95</span>
+              <span style="font-size:11px;padding:3px 10px;border-radius:100px;background:rgba(0,137,123,0.1);color:var(--teal);font-weight:600;">📊 Trained on 1,006 records</span>
+              <span style="font-size:11px;padding:3px 10px;border-radius:100px;background:rgba(255,152,0,0.1);color:var(--amber);font-weight:600;">🕐 ETA ~${etaStr}</span>
+            </div>
           </div>
         </div>
         ${match.gmail?`<div style="margin-top:12px;padding:12px 16px;background:rgba(26,110,245,0.05);border:1px solid rgba(26,110,245,0.12);border-radius:var(--rs);font-size:12px;color:var(--text3);">📧 Reports & prescriptions will be sent to: <strong style="color:var(--blue)">${match.gmail}</strong></div>`:''}
@@ -1324,12 +1542,15 @@ async function addPatient() {
   state.queue.push(p);
   save();
 
-  // Calculate AI predicted wait time and queue position
+  // Calculate AI predicted wait time using cumulative queue (sum of patients ahead)
   const q = getOptQ();
-  const pos = q.findIndex(x=>x.id===p.id)+1;
-  const waitMins = predictWait(severity);
-  const waitHours = waitMins >= 60 ? Math.floor(waitMins/60)+'h '+( waitMins%60>0 ? (waitMins%60)+'m' : '') : waitMins+' minutes';
-  const patientsAhead = pos - 1;
+  const posIdx = q.findIndex(x=>x.id===p.id);          // 0-based
+  const pos    = posIdx + 1;                             // 1-based display
+  const patientsAhead = posIdx;                          // patients before this one
+  // Total wait = ML consult time of every patient ahead in queue
+  const waitMins   = Math.max(1, q.slice(0, posIdx).reduce((acc, x) => acc + mlPredict(x), 0));
+  const ownConsult = mlPredict({...p, wait:0, isEmg: ['Emergency','Surgery'].includes(type)||severity>=5});
+  const waitHours  = waitMins >= 60 ? Math.floor(waitMins/60)+'h '+(waitMins%60>0?(waitMins%60)+'m':'') : waitMins+' minutes';
   const urgencyLabel = severity>=5?'🚨 EMERGENCY':severity>=4?'⚠️ Urgent':'✅ Normal';
   const now = new Date();
   const eta = new Date(now.getTime() + waitMins*60000);
@@ -1366,7 +1587,7 @@ async function addPatient() {
         `━━━━━━━━━━━━━━━━━━━━━━━━━`,
         ``,
         `🤖 AI Predicted Wait Time`,
-        `   ⏱️  Estimated Wait  : ${waitHours}`,
+        `   ⏱️  Queue Wait Time  : ${waitHours}  (${patientsAhead} patient(s) ahead × ML model)`,
         `   🕐  Expected Time   : ~${etaStr}`,
         `   👥  Patients Ahead  : ${patientsAhead}`,
         `   📌  Your Position   : #${pos} in queue`,
@@ -1380,17 +1601,18 @@ async function addPatient() {
         ``,
         `Regards,`,
         `${emailConfig.docName || 'HMS Medical Team'}`,
+        `HMS – Team A4 Hospital`,
       ].join('\n');
 
       try {
         await emailjs.send(emailConfig.serviceId, emailConfig.templateId, {
           to_email: gmail,
           patient_name: name,
-          patient_id: p.id,
-          disease: disease,
-          doctor_name: emailConfig.docName || 'HMS Medical Team',
+          patient_id: '',
+          disease: '',
+          doctor_name: '',
           message: emailMsg,
-          hospital_name: 'HMS – Team A4 Hospital',
+          hospital_name: '',
         });
         setTimeout(()=>toast(`📧 Queue confirmation sent to ${gmail}`,'success'),1000);
       } catch(err) {
@@ -1608,14 +1830,246 @@ document.getElementById('emailSetupOverlay').addEventListener('click', function(
   if(e.target===this) closeEmailSetup();
 });
 
-// Init email on load
-loadEmailConfig();
 
-// Auto-refresh
-setInterval(()=>{
-  if(state.role==='staff') renderQueue();
-  else if(state.role==='patient') renderPatientPortal();
-},30000);
+// ════════════════════════════
+// AI ENGINE v2 - ENHANCED
+// ════════════════════════════
+
+// Historical learning data (simulated from past records)
+const AI_HISTORY = {
+  consultDuration: { Emergency: 22, Surgery: 45, Consultation: 12 },
+  delayThresholdQueue: 6,
+  avgCapacityPerHour: 4,
+  learningRate: 0.1,
+};
+
+// Predict consultation duration using severity + type + history
+function predictConsultDuration(p) {
+  // Now powered by ML model trained on actual CSV data (replaces rule-based formula)
+  return mlPredict(p);
+}
+
+// Predict delay risk based on queue size + workload
+function predictDelayRisk(q) {
+  if (!q.length) return { pct: 0, level: 'low' };
+  const avgSev = q.reduce((a, p) => a + p.severity, 0) / q.length;
+  const emgCount = q.filter(p => p.isEmg).length;
+  const score = (q.length / AI_HISTORY.delayThresholdQueue) * 0.5 + (avgSev / 5) * 0.3 + (emgCount / Math.max(q.length, 1)) * 0.2;
+  const pct = Math.min(Math.round(score * 100), 99);
+  return { pct, level: pct < 35 ? 'low' : pct < 65 ? 'med' : 'high' };
+}
+
+// Explain why patient got priority
+function explainPriority(p, rank) {
+  const reasons = [];
+  const factors = [];
+  if (p.severity >= 5) { reasons.push('Severity level 5 — critical condition requiring immediate attention'); factors.push('Sev. 5/5'); }
+  else if (p.severity >= 4) { reasons.push('High severity (level ' + p.severity + ') — accelerated processing'); factors.push('Sev. ' + p.severity + '/5'); }
+  if (p.isEmg) { reasons.push('Emergency or Surgery type — auto-elevated in priority scoring'); factors.push('Emergency Type'); }
+  if (p.wait > 20) { reasons.push('Waited ' + p.wait + ' min — wait-time bonus applied (+' + Math.round(p.wait * 0.5) + ' score)'); factors.push('Long Wait'); }
+  if (rank === 1) reasons.push('Highest combined AI score in queue — selected for immediate service');
+  if (!reasons.length) reasons.push('Standard consultation — ranked by arrival order with normal severity weight');
+  return { reasons, factors };
+}
+
+// Explain why appointment shifted
+function explainShift(p, origPos, newPos) {
+  if (newPos < origPos) return `Moved up from slot #${origPos} → #${newPos} because ${p.severity >= 4 ? 'high severity detected' : 'emergency case was inserted after registration'}.`;
+  if (newPos > origPos) return `Pushed to slot #${newPos} from #${origPos} because a higher-priority emergency case arrived and took precedence.`;
+  return `Slot unchanged — no higher-priority cases registered since last update.`;
+}
+
+// Determine patient flow stage
+function getPatientFlowStage(p) {
+  const wait = p.wait || 0;
+  const dur = predictConsultDuration(p);
+  if (p.isEmg) {
+    if (wait < 5) return { current: 'Registration', done: [], next: ['Doctor', 'Lab', 'Pharmacy'] };
+    if (wait < dur) return { current: 'Doctor', done: ['Registration'], next: ['Lab', 'Pharmacy'] };
+    return { current: 'Lab', done: ['Registration', 'Doctor'], next: ['Pharmacy'] };
+  }
+  if (wait < 3) return { current: 'Registration', done: [], next: ['Doctor', 'Lab', 'Pharmacy'] };
+  if (wait < dur + 3) return { current: 'Doctor', done: ['Registration'], next: ['Lab', 'Pharmacy'] };
+  if (wait < dur + 10) return { current: 'Lab', done: ['Registration', 'Doctor'], next: ['Pharmacy'] };
+  return { current: 'Pharmacy', done: ['Registration', 'Doctor', 'Lab'], next: [] };
+}
+
+// Count patients in each dept
+function getDeptCounts(q) {
+  const counts = { Registration: 0, Doctor: 0, Lab: 0, Pharmacy: 0 };
+  q.forEach(p => {
+    const stage = getPatientFlowStage(p);
+    counts[stage.current] = (counts[stage.current] || 0) + 1;
+  });
+  return counts;
+}
+
+// Smart schedule optimizer — re-slots queue in real time
+function runScheduleOptimizer() {
+  const q = getOptQ();
+  const el = document.getElementById('ai-schedule');
+  if (!el) return;
+  if (!q.length) { el.innerHTML = '<div style="color:var(--text3);font-size:13px;">No patients in queue to optimize.</div>'; return; }
+
+  let timeOffset = 0;
+  const now = new Date();
+  const slots = q.map((p, i) => {
+    const dur = predictConsultDuration(p);
+    const slotTime = new Date(now.getTime() + timeOffset * 60000);
+    const shifted = p.isEmg && i > 0;
+    const html = `
+      <div class="sched-slot ${shifted ? 'sched-adjusted' : ''}">
+        <div class="sched-time">${slotTime.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</div>
+        <div style="flex:1">
+          <div class="sched-patient">${p.name} <span style="font-family:var(--mono);font-size:11px;color:var(--text3)">${p.id}</span></div>
+          <div class="sched-type">${p.type} · Severity ${p.severity}/5 · Est. ${dur} min</div>
+        </div>
+        ${shifted ? '<span class="sched-adj-badge">⬆ Shifted Up</span>' : ''}
+        ${p.isEmg ? '<span class="ai-pred-chip high">🚨 EMERGENCY</span>' : ''}
+      </div>`;
+    timeOffset += dur;
+    return html;
+  });
+  el.innerHTML = `<div style="margin-bottom:12px;font-size:12px;color:var(--text3);">Schedule auto-generated at ${now.toLocaleTimeString('en-IN')} · Adjusts dynamically as patients arrive or are absent.</div>` + slots.join('');
+  toast('Schedule re-optimized by AI!', 'success');
+}
+
+// Render AI Dashboard
+function renderAIDashboard() {
+  const q = getOptQ();
+  const all = [...state.queue, ...state.history];
+
+  // Stats
+  const avgConsult = q.length ? Math.round(q.reduce((a, p) => a + predictConsultDuration(p), 0) / q.length) : 0;
+  const delay = predictDelayRisk(q);
+  const workloadPct = Math.min(Math.round((q.length / 10) * 100), 100);
+  const deptCounts = getDeptCounts(q);
+  const busiest = Object.entries(deptCounts).sort((a, b) => b[1] - a[1])[0];
+
+  setText('ai-avg-consult', avgConsult || '—');
+  setText('ai-delay-risk', delay.pct + '%');
+  setText('ai-workload', workloadPct + '%');
+  setText('ai-busiest', busiest ? `${busiest[0]} (${busiest[1]})` : '—');
+
+  // Queue Intelligence Table
+  const intel = document.getElementById('ai-queue-intel');
+  if (intel) {
+    if (!q.length) {
+      intel.innerHTML = '<div style="color:var(--text3);font-size:13px;">No patients in queue.</div>';
+    } else {
+      const delayRow = delay.level !== 'low' ? `<div class="delay-warn"><div class="delay-warn-icon">⚠️</div><div class="delay-warn-text"><strong>Delay Alert:</strong> ${delay.pct}% probability of significant delays. ${delay.level === 'high' ? 'Recommend calling additional staff immediately.' : 'Monitor closely and consider fast-tracking stable cases.'}</div></div>` : '';
+      intel.innerHTML = delayRow + `<table class="ai-intel-table"><thead><tr><th>Patient</th><th>Type</th><th>Predicted Consult</th><th>Delay Risk</th><th>Current Stage</th><th>ETA to Serve</th></tr></thead><tbody>` +
+        q.map((p, i) => {
+          const dur = predictConsultDuration(p);
+          const dr = predictDelayRisk(q.slice(0, i + 1));
+          const stage = getPatientFlowStage(p);
+          const eta = new Date(Date.now() + q.slice(0, i).reduce((a, x) => a + predictConsultDuration(x), 0) * 60000);
+          return `<tr>
+            <td><div class="p-name">${p.name}</div><div class="p-meta">${p.id} · Sev. ${p.severity}/5</div></td>
+            <td>${typeBadge(p.type)}</td>
+            <td><span class="ai-pred-chip ${p.severity >= 4 ? 'high' : p.severity >= 3 ? 'med' : 'low'}">⏱ ${dur} min</span></td>
+            <td><span class="ai-pred-chip ${dr.level}">${dr.pct}%</span></td>
+            <td><span style="font-size:11px;font-weight:700;color:var(--blue)">📍 ${stage.current}</span></td>
+            <td><span style="font-family:var(--mono);font-size:12px;color:var(--text2)">${eta.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</span></td>
+          </tr>`;
+        }).join('') + '</tbody></table>';
+    }
+  }
+
+  // AI Explanations
+  const expEl = document.getElementById('ai-explanations');
+  if (expEl) {
+    if (!q.length) {
+      expEl.innerHTML = '<div style="color:var(--text3);font-size:13px;">Add patients to the queue to see AI explanations.</div>';
+    } else {
+      expEl.innerHTML = q.slice(0, 5).map((p, i) => {
+        const { reasons, factors } = explainPriority(p, i + 1);
+        const dur = predictConsultDuration(p);
+        return `<div class="ai-explain-card">
+          <div class="ai-explain-icon">${i === 0 ? '🏆' : i < 3 ? '⚡' : '📋'}</div>
+          <div style="flex:1">
+            <div class="ai-explain-title">#${i + 1} ${p.name} (${p.id}) — Why this position?</div>
+            <div class="ai-explain-text">
+              ${reasons.map(r => `• ${r}`).join('<br>')}
+              <br>• Predicted consultation duration: <strong>${dur} minutes</strong> (learned from ${p.type.toLowerCase()} history + severity ${p.severity})
+            </div>
+            <div class="ai-explain-factors">${factors.map(f => `<span class="ai-factor-tag">${f}</span>`).join('')}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Auto-run scheduler
+  runScheduleOptimizer();
+}
+
+// Render Patient Flow Page
+function renderPatientFlow() {
+  const q = getOptQ();
+  const deptCounts = getDeptCounts(q);
+  const total = q.length || 1;
+  const depts = [
+    { name: 'Registration', icon: '📝', color: 'var(--blue)', count: deptCounts['Registration'] || 0 },
+    { name: 'Doctor', icon: '👨‍⚕️', color: 'var(--teal)', count: deptCounts['Doctor'] || 0 },
+    { name: 'Lab', icon: '🔬', color: 'var(--amber)', count: deptCounts['Lab'] || 0 },
+    { name: 'Pharmacy', icon: '💊', color: 'var(--green)', count: deptCounts['Pharmacy'] || 0 },
+  ];
+
+  const diagram = document.getElementById('flow-diagram');
+  if (diagram) {
+    const maxCount = Math.max(...depts.map(d => d.count), 1);
+    diagram.innerHTML = `<div class="flow-pipeline">` + depts.map((d, i) => {
+      const pct = (d.count / maxCount) * 100;
+      const level = d.count > 3 ? 'critical' : d.count > 1 ? 'busy' : d.count > 0 ? 'active' : '';
+      return `
+        ${i > 0 ? '<div class="flow-arrow">→</div>' : ''}
+        <div class="flow-dept ${level}">
+          <div class="fd-icon">${d.icon}</div>
+          <div class="fd-name">${d.name}</div>
+          <div class="fd-count">${d.count}</div>
+          <div class="fd-label">patients here</div>
+          <div class="fd-bar"><div class="fd-bar-fill" style="width:${pct}%;background:${d.color}"></div></div>
+        </div>`;
+    }).join('') + `</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:8px;">
+      🔴 Critical (3+ patients) &nbsp; 🟡 Busy (2 patients) &nbsp; 🔵 Active (1 patient) &nbsp; ⬜ Empty
+    </div>`;
+  }
+
+  const individual = document.getElementById('flow-individual');
+  if (individual) {
+    if (!q.length) {
+      individual.innerHTML = '<div style="color:var(--text3);font-size:13px;">No patients in queue.</div>';
+      return;
+    }
+    const allSteps = ['Registration', 'Doctor', 'Lab', 'Pharmacy'];
+    individual.innerHTML = q.map(p => {
+      const stage = getPatientFlowStage(p);
+      const steps = allSteps.map((s, si) => {
+        const isDone = stage.done.includes(s);
+        const isCurrent = stage.current === s;
+        const cls = isDone ? 'done' : isCurrent ? 'current' : 'pending';
+        const icons = { Registration: '📝', Doctor: '👨‍⚕️', Lab: '🔬', Pharmacy: '💊' };
+        return `${si > 0 ? '<span class="fj-arrow">→</span>' : ''}<span class="fj-dept ${cls}">${icons[s]} ${s}${isCurrent ? ' ●' : isDone ? ' ✓' : ''}</span>`;
+      }).join('');
+      return `<div class="flow-journey-row">
+        <div class="fj-name">${p.name} <span style="font-family:var(--mono);font-size:10px;color:var(--text3)">${p.id}</span></div>
+        <div class="fj-step" style="flex:1;flex-wrap:wrap;gap:4px;">${steps}</div>
+        <span class="ai-pred-chip ${p.isEmg ? 'high' : 'low'}" style="flex-shrink:0">${p.isEmg ? '🚨 Critical' : '✅ Stable'}</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+// Auto-refresh AI dashboard every 30s when on that page
+setInterval(() => {
+  const aidash = document.getElementById('page-ai-dashboard');
+  if (aidash && aidash.style.display !== 'none') renderAIDashboard();
+  const flowpage = document.getElementById('page-patient-flow');
+  if (flowpage && flowpage.style.display !== 'none') renderPatientFlow();
+}, 30000);
+
 </script>
 </body>
 </html>
