@@ -49,8 +49,3 @@ $$Score = (Severity \times 15) + (WaitTime \times 0.5) + (EmergencyBonus)$$
 * **Communication:** EmailJS API integration.
 * **Optimization Logic:** Weighted scoring algorithm for queue management.
 * **Storage:** Browser `localStorage` for persistent state management across sessions.
-
-## ⚙️ Installation & Setup
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/RJ331155/hms-team-a4.git](https://github.com/RJ331155/hms-team-a4.git)
